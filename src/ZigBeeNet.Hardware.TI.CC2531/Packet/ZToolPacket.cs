@@ -119,17 +119,18 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             BuildPacket(ApiId, frameData);
         }
 
-        public void BuildPacket(DoubleByte ApiId, byte[] frameData)
+        public void BuildPacket(DoubleByte ApiId, byte[] frameData, int offset = 0, int length = -1)
         {
             // packet size is start byte + len byte + 2 cmd bytes + data + checksum byte
-            Packet = new byte[frameData.Length + 5];
+            length = length < 0 ? frameData.Length : length;
+            Packet = new byte[length + 5];
             Packet[0] = START_BYTE;
 
             // note: if checksum is not correct, XBee won't send out packet or return error. ask me how I know.
             // checksum is always computed on pre-escaped packet
             Checksum checksum = new Checksum();
             // Packet length does not include escape bytes
-            LEN = frameData.Length;
+            LEN = length;
             Packet[1] = (byte)LEN;
             checksum.AddByte(Packet[1]);
             // msb Cmd0 -> Type & Subsystem
@@ -139,16 +140,19 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             Packet[3] = ApiId.Lsb;
             checksum.AddByte(Packet[3]);
             CMD = ApiId;
+
+            Buffer.BlockCopy(frameData, offset, Packet, PAYLOAD_START_INDEX, length);
             // data
-            for (int i = 0; i < frameData.Length; i++)
-            {
-                if (!ByteUtils.IsByteValue(frameData[i]))
-                {
-                    throw new Exception("Value is greater than one byte: " + frameData[i] + " (" + string.Format("{0:X}", frameData[i]) + ")");
-                }
-                Packet[PAYLOAD_START_INDEX + i] = frameData[i];
-                checksum.AddByte(Packet[PAYLOAD_START_INDEX + i]);
-            }
+            //for (int i = 0; i < frameData.Length; i++)
+            //{
+            //    if (!ByteUtils.IsByteValue(frameData[i]))
+            //    {
+            //        throw new Exception("Value is greater than one byte: " + frameData[i] + " (" + string.Format("{0:X}", frameData[i]) + ")");
+            //    }
+            //    Packet[PAYLOAD_START_INDEX + i] = frameData[i];
+            //    checksum.AddByte(Packet[PAYLOAD_START_INDEX + i]);
+            //}
+            checksum.AddBytes(frameData, offset, length);
             // set last byte as checksum
             FCS = checksum.Value;
             Packet[Packet.Length - 1] = FCS;

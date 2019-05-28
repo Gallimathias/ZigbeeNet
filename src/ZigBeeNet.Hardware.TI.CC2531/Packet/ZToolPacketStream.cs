@@ -103,7 +103,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 
             return exceptionResponse;
         }
-
+        
 
         public static async Task<ZToolPacket> ReadAsync(Stream stream)
         {
@@ -135,12 +135,12 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             throw new InvalidDataException("unable to decode packet");
         }
 
-        public static ZToolPacket ParsePayload(DoubleByte cmd, byte[] payload)
+        public static ZToolPacket ParsePayload(DoubleByte cmd, byte[] payload, int offset = 0, int length = -1)
         {
             switch ((ZToolCMD)cmd.Value)
             {
                 case ZToolCMD.SYS_RESET_RESPONSE:
-                    return new SYS_RESET_RESPONSE(payload);
+                    return new SYS_RESET_RESPONSE(payload, offset, length);
                 case ZToolCMD.SYS_VERSION_RESPONSE:
                     return new SYS_VERSION_RESPONSE(payload);
                 case ZToolCMD.SYS_PING_RESPONSE:
@@ -286,6 +286,50 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             }
         }
 
+        public static ZToolPacket ParsePacket(byte[] data, int offset, int dataLength)
+        {
+            if (dataLength < 5)
+                throw new ArgumentException($"{nameof(dataLength)} is lower than 5", nameof(dataLength));
+
+            if (offset < 0)
+                throw new ArgumentException($"{nameof(offset)} is lower than 0", nameof(offset));
+
+            if (data[offset] != ZToolPacket.START_BYTE)
+                throw new ArgumentException($"{nameof(data)} is not valid {nameof(ZToolPacket)}", nameof(data));
+
+            Exception exception;
+            try
+            {
+                ZToolPacket response;
+                var pos = offset + 1;
+                var length = data[pos];
+                var apiId = new DoubleByte(data[pos + 1], data[pos + 2]);
+                pos += 3;
+                response = ParsePayload(apiId, data, pos, length);
+                pos += length + 1;
+                byte fcs = data[pos];
+                if (fcs != response.FCS)
+                {
+                    throw new ZToolParseException("Packet checksum failed");
+                }
+                return response;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Packet parsing failed due to exception.", e);
+                exception = e;
+            }
+            ZToolPacket exceptionResponse = new ErrorPacket();
+
+            if (exception != null)
+            {
+                exceptionResponse.Error = true;
+                exceptionResponse.ErrorMsg = exception.Message;
+            }
+
+            return exceptionResponse;
+        }
+
         public byte Read(string context)
         {
             byte b = Read();
@@ -302,7 +346,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
         public byte Read()
         {
 
-            byte? b = _port.Read();
+            byte? b = null;//_port.Read(); TODO: byte array
 
             if (b == null)
             {

@@ -1,29 +1,24 @@
-﻿using System;
+﻿using Serilog;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
 using ZigBeeNet.Transport;
-using Serilog;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 namespace ZigBeeNet.Tranport.SerialPort
 {
     public class ZigBeeSerialPort : IZigBeePort
     {
         private System.IO.Ports.SerialPort _serialPort;
-
-        private Task _reader;
-
-        private CancellationTokenSource _cancellationToken;
-
-        private BlockingCollection<byte> _fifoBuffer = new BlockingCollection<byte>(new ConcurrentQueue<byte>());
+        private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly ConcurrentQueue<byte[]> _fifoBuffer;
 
         public string PortName { get; set; }
-
         public int Baudrate { get; set; }
-
-        public bool IsOpen { get => _serialPort != null && _serialPort.IsOpen ? true : false; }
+        public bool IsOpen => _serialPort != null && _serialPort.IsOpen;
 
         public ZigBeeSerialPort(string portName, int baudrate = 115200)
         {
@@ -31,15 +26,13 @@ namespace ZigBeeNet.Tranport.SerialPort
             Baudrate = baudrate;
 
             _serialPort = new System.IO.Ports.SerialPort(portName, baudrate);
-            _cancellationToken = new CancellationTokenSource();
+            _cancellationTokenSource = new CancellationTokenSource();
+            _fifoBuffer = new ConcurrentQueue<byte[]>();
         }
 
         public void Close()
         {
-            if (_cancellationToken != null)
-            {
-                _cancellationToken.Cancel();
-            }
+            _cancellationTokenSource?.Cancel();
 
             if (_serialPort != null)
             {
@@ -69,7 +62,7 @@ namespace ZigBeeNet.Tranport.SerialPort
         {
             Baudrate = baudrate;
 
-            bool success = false;
+            var success = false;
 
             Log.Debug("Opening port {Port} at {Baudrate} baud.", PortName, baudrate);
 
@@ -77,9 +70,9 @@ namespace ZigBeeNet.Tranport.SerialPort
 
             try
             {
-                bool tryOpen = true;
+                var tryOpen = true;
 
-                if (Environment.OSVersion.Platform.ToString().StartsWith("Win") == false)
+                if (!Environment.OSVersion.Platform.ToString().StartsWith("Win"))
                 {
                     tryOpen = (tryOpen && File.Exists(PortName));
                 }
@@ -97,10 +90,14 @@ namespace ZigBeeNet.Tranport.SerialPort
 
             if (_serialPort.IsOpen)
             {
+                _serialPort.DiscardInBuffer();
+                _serialPort.DiscardOutBuffer();
+                _serialPort.ReceivedBytesThreshold = 1;
+                _serialPort.DataReceived += OnDataReceived;
                 // Start Reader Task
-                _reader = new Task(ReaderTask, _cancellationToken.Token);
+                //_readerTask = new Task(ReaderTask, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
 
-                _reader.Start();
+                //_readerTask.Start(TaskScheduler.Default);
 
                 // TODO: ConnectionStatusChanged event
             }
@@ -117,21 +114,18 @@ namespace ZigBeeNet.Tranport.SerialPort
              */
             while (_fifoBuffer.Count > 0)
             {
-                _fifoBuffer.TryTake(out byte item);
+                _fifoBuffer.Clear();
             }
         }
 
-        public byte? Read()
-        {
-            return Read(9999999);
-        }
+        public byte[] Read() => Read(9999999);
 
-        public byte? Read(int timeout)
+        public byte[] Read(int timeout)
         {
             try
             {
                 /* This blocks until data available (Producer Consumer pattern) */
-            var notTimedOut = _fifoBuffer.TryTake(out byte value, timeout);
+                var notTimedOut = _fifoBuffer.TryDequeue(out var value);
 
                 if (notTimedOut)
                 {
@@ -139,7 +133,7 @@ namespace ZigBeeNet.Tranport.SerialPort
                 }
                 else
                 {
-                    return null; ;
+                    return null;
                 }
             }
             catch (Exception e)
@@ -151,60 +145,48 @@ namespace ZigBeeNet.Tranport.SerialPort
 
         public void Write(byte[] value)
         {
-            if (_serialPort == null)
+            //If port is null or not open
+            if (_serialPort == null || !IsOpen)
                 return;
 
-            if (IsOpen)
+            try
             {
-                try
-                {
-                    _serialPort.Write(value, 0, value.Length);
+                _serialPort.Write(value, 0, value.Length);
 
-                    Log.Debug("Write data to serialport: {Data}", BitConverter.ToString(value));
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, "Error while writing to serial port");
-                }
+                Log.Debug("Write data to serialport: {Data}", BitConverter.ToString(value));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error while writing to serial port");
             }
         }
 
-        private void ReaderTask()
+        private void OnDataReceived(object sender, SerialDataReceivedEventArgs args)
         {
-            while (IsOpen && _cancellationToken.IsCancellationRequested == false)
+            try
             {
-                try
+                var length = _serialPort.BytesToRead;
+                var message = new byte[length];
+                var bytesRead = 0;
+                var bytesToRead = length;
+
+                do
                 {
-                    /* This will block until at least one byte is available */
-                    byte incByte = Convert.ToByte(_serialPort.ReadByte());
+                    var n = _serialPort.Read(message, bytesRead, length - bytesRead); // read may return anything from 0 - length , 0 = end of stream
 
-                    /* Read the rest of the data but do not forget the byte above while writing to the buffer */
-                    int length = _serialPort.BytesToRead;
-                    var message = new byte[length + 1];
-                    message[0] = incByte;
-                    var bytesRead = 0;
-                    var bytesToRead = length;
+                    if (n == 0)
+                        break;
 
-                    do
-                    {
-                        var n = _serialPort.Read(message, bytesRead + 1, length - bytesRead); // read may return anything from 0 - length , 0 = end of stream
-                        if (n == 0) break;
-                        bytesRead += n;
-                        bytesToRead -= n;
-                    } while (bytesToRead > 0);
+                    bytesRead += n;
+                    bytesToRead -= n;
+                } while (bytesToRead > 0);
 
+                _fifoBuffer.Enqueue(message);
 
-                    foreach (byte recv in message)
-                    {
-                        _fifoBuffer.Add(recv);
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e, "Error while reading from serial port");
-                    Thread.Sleep(1000);
-                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while reading from serial port");
             }
         }
     }

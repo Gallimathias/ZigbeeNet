@@ -44,8 +44,8 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             _cancellationToken = new CancellationTokenSource();
             _packetHandler = packetHandler;
 
-            _parserTask = new Task(Run);
-            _parserTask.Start();
+            _parserTask = new Task(Run, TaskCreationOptions.LongRunning);
+            _parserTask.Start(TaskScheduler.Default);
         }
 
         /// <summary>
@@ -58,12 +58,12 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             {
                 try
                 {
-                    byte? val = _port.Read();
-                    if (val == ZToolPacket.START_BYTE)
+                    byte[] val = _port.Read();
+                    if (val[0] == ZToolPacket.START_BYTE)
                     {
                         // inputStream.mark(256);
-                        ZToolPacketStream packetStream = new ZToolPacketStream(_port);
-                        ZToolPacket response = packetStream.ParsePacket();
+                        //var packetStream = new ZToolPacketStream(_port);
+                        ZToolPacket response = ZToolPacketStream.ParsePacket(val, 0, val.Length);
 
                         Log.Verbose("Response is {Type} -> {Response}", response.GetType().Name, response);
                         if (response.Error)

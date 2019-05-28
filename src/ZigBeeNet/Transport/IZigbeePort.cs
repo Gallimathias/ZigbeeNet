@@ -41,14 +41,14 @@ namespace ZigBeeNet.Transport
         /// Read a value from the port. This should block until a byte is available.
         /// </summary>
         /// <returns>the data byte (integer) read from the port</returns>
-        byte? Read();
+        byte[] Read();
 
         /// <summary>
         /// Read a value from the port. This will block until a byte is available or the timeout period is reached.
         /// </summary>
         /// <param name="timeout">the timeout in milliseconds to wait. If not data is received, -1 is returned.</param>
         /// <returns>the data byte read from the port</returns>
-        byte? Read(int timeout);
+        byte[] Read(int timeout);
 
         /// <summary>
         /// Purge all data currently in the receive buffer

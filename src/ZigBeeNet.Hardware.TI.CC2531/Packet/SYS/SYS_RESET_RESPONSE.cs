@@ -39,16 +39,16 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
         /// </summary>
         public byte TransportRev { get; private set; }
 
-        public SYS_RESET_RESPONSE(byte[] framedata)
+        public SYS_RESET_RESPONSE(byte[] framedata, int offset = 0, int length = -1)
         {
-            Reason = (ResetType)framedata[0];
-            TransportRev = framedata[1];
-            Product = framedata[2];
-            MajorRel = framedata[3];
-            MinorRel = framedata[4];
-            HwRev = framedata[5];
+            Reason = (ResetType)framedata[offset];
+            TransportRev = framedata[offset + 1];
+            Product = framedata[offset + 2];
+            MajorRel = framedata[offset + 3];
+            MinorRel = framedata[offset + 4];
+            HwRev = framedata[offset + 5];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RESET_RESPONSE), framedata);
+            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RESET_RESPONSE), framedata, offset, length);
         }
 
         public enum ResetType : byte

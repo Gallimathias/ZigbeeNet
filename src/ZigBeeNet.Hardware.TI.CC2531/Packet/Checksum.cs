@@ -26,5 +26,11 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             // checksum+= val;
             Value = (byte)(Value ^ val);
         }
+
+        internal void AddBytes(byte[] frameData, int offset, int length)
+        {
+            for (int i = offset; i < length; i++)
+                AddByte(frameData[i]);
+        }
     }
 }
