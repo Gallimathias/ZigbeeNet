@@ -1,29 +1,43 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using ZigBeeNet.Hardware.TI.CC2531.Util;
 using ZigBeeNet.Extensions;
+using ZigBeeNet.Hardware.TI.CC2531.Extensions;
 using ZigBeeNet.Hardware.TI.CC2531.Packet.AF;
 using ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI;
 using ZigBeeNet.Hardware.TI.CC2531.Packet.SYS;
-using ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO;
-using Serilog;
-using ZigBeeNet.Transport;
 using ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL;
-using ZigBeeNet.Hardware.TI.CC2531.Extensions;
+using ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO;
+using ZigBeeNet.Hardware.TI.CC2531.Util;
+using ZigBeeNet.Transport;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 {
     public class ZToolPacketStream : IByteArrayInputStream
     {
+        private static readonly Dictionary<ZToolCMD, Func<byte[], int, int, ZToolPacket>> parserDictionary;
+
+
+        static ZToolPacketStream() 
+            => parserDictionary = Assembly
+                .GetAssembly(typeof(ZToolPacket))
+                .GetTypes()
+                .Where(t => typeof(ZToolPacket).IsAssignableFrom(t) && t.GetCustomAttribute<PacketParsingAttribute>() != null)
+                .ToDictionary(
+                    t => t.GetCustomAttribute<PacketParsingAttribute>().CMD,
+                    t => new Func<byte[], int, int, ZToolPacket>((d, o, l) => Activator.CreateInstance(t, d, o, l) as ZToolPacket));
+
         private int _length;
 
-        private bool _generic = false;
+        private readonly bool _generic = false;
 
-        private IZigBeePort _port;
+        private readonly IZigBeePort _port;
+
 
         public bool Done { get; private set; }
 
@@ -31,10 +45,8 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 
         public Checksum Checksum { get; private set; } = new Checksum();
 
-        public ZToolPacketStream(IZigBeePort port)
-        {
-            _port = port;
-        }
+        public ZToolPacketStream(IZigBeePort port) 
+            => _port = port;
 
         public ZToolPacket ParsePacket()
         {
@@ -49,15 +61,15 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
                 _length = Read("Length");
                 // log.debug("data length is " + ByteUtils.formatByte(length.getLength()));
                 byte[] frameData;
-                byte apiIdMSB = Read("API PROFILE_ID_HOME_AUTOMATION MSB");
-                byte apiIdLSB = Read("API PROFILE_ID_HOME_AUTOMATION LSB");
-                DoubleByte apiId = new DoubleByte(apiIdMSB, apiIdLSB);
+                var apiIdMSB = Read("API PROFILE_ID_HOME_AUTOMATION MSB");
+                var apiIdLSB = Read("API PROFILE_ID_HOME_AUTOMATION LSB");
+                var apiId = new DoubleByte(apiIdMSB, apiIdLSB);
                 // TODO Remove generic never used
                 // generic = true;
                 if (_generic)
                 {
                     // Log.Information("Parsing data as generic");
-                    int i = 0;
+                    var i = 0;
                     frameData = new byte[_length];
                     // Read all data bytes without parsing
                     while (i < frameData.Length)
@@ -103,7 +115,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 
             return exceptionResponse;
         }
-        
+
 
         public static async Task<ZToolPacket> ReadAsync(Stream stream)
         {
@@ -127,7 +139,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
                 if (buffer.Skip(1).Take(length + 3).Aggregate((byte)0x00, (total, next) => (byte)(total ^ next)) != buffer[length + 4])
                     throw new InvalidDataException("checksum error");
 
-                DoubleByte cmd = new DoubleByte(buffer[3], buffer[2]);
+                var cmd = new DoubleByte(buffer[3], buffer[2]);
 
                 return ParsePayload(cmd, buffer.Skip(4).Take(length).ToArray());
             }
@@ -137,28 +149,13 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 
         public static ZToolPacket ParsePayload(DoubleByte cmd, byte[] payload, int offset = 0, int length = -1)
         {
-            switch ((ZToolCMD)cmd.Value)
+            var type = (ZToolCMD)cmd.Value;
+            if (parserDictionary.TryGetValue(type, out Func<byte[], int, int, ZToolPacket> createPackage))
+                return createPackage(payload, offset, length);
+
+
+            switch (type)
             {
-                case ZToolCMD.SYS_RESET_RESPONSE:
-                    return new SYS_RESET_RESPONSE(payload, offset, length);
-                case ZToolCMD.SYS_VERSION_RESPONSE:
-                    return new SYS_VERSION_RESPONSE(payload);
-                case ZToolCMD.SYS_PING_RESPONSE:
-                    return new SYS_PING_RESPONSE(payload);
-                case ZToolCMD.SYS_RPC_ERROR:
-                    return new SYS_RPC_ERROR(payload);
-                case ZToolCMD.SYS_TEST_LOOPBACK_SRSP:
-                    return new SYS_TEST_LOOPBACK_SRSP(payload);
-                case ZToolCMD.AF_DATA_CONFIRM:
-                    return new AF_DATA_CONFIRM(payload);
-                case ZToolCMD.AF_DATA_SRSP:
-                    return new AF_DATA_REQUEST_SRSP(payload);
-                case ZToolCMD.AF_DATA_SRSP_EXT:
-                    return new AF_DATA_SRSP_EXT(payload);
-                case ZToolCMD.AF_INCOMING_MSG:
-                    return new AF_INCOMING_MSG(payload);
-                case ZToolCMD.AF_REGISTER_SRSP:
-                    return new AF_REGISTER_SRSP(payload);
                 case ZToolCMD.ZB_ALLOW_BIND_CONFIRM:
                     return new ZB_ALLOW_BIND_CONFIRM(payload);
                 case ZToolCMD.ZB_ALLOW_BIND_RSP:
@@ -307,7 +304,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
                 pos += 3;
                 response = ParsePayload(apiId, data, pos, length);
                 pos += length + 1;
-                byte fcs = data[pos];
+                var fcs = data[pos];
                 if (fcs != response.FCS)
                 {
                     throw new ZToolParseException("Packet checksum failed");
@@ -332,7 +329,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 
         public byte Read(string context)
         {
-            byte b = Read();
+            var b = Read();
             Log.Verbose("Read {Context}  byte, val is {Byte}", context, b);
             return b;
         }
@@ -380,9 +377,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
         // TODO remove it seems useless, we can replace with a reading of all the bytes of the payload
         private byte[] ReadRemainingBytes()
         {
-            byte[] value = new byte[_length - GetFrameDataBytesRead()];
+            var value = new byte[_length - GetFrameDataBytesRead()];
 
-            for (int i = 0; i < value.Length; i++)
+            for (var i = 0; i < value.Length; i++)
             {
                 value[i] = Read("Remaining bytes " + (value.Length - i));
                 // log.debug("byte " + i + " is " + value[i]);
@@ -396,22 +393,18 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
         ///
         /// <returns>number of bytes remaining to be read excluding checksum</returns>
         /// </summary>
-        public int GetFrameDataBytesRead()
-        {
+        public int GetFrameDataBytesRead() =>
             // subtract out the 1 length bytes and API PROFILE_ID_HOME_AUTOMATION 2 bytes
-            return BytesRead - 3;
-        }
+            BytesRead - 3;
 
         /// <summary>
         /// Number of bytes remaining to be read, including the checksum
         ///
         /// <returns>number of bytes remaining to be read including checksum</returns>
         /// </summary>
-        public int GetRemainingBytes()
-        {
+        public int GetRemainingBytes() =>
             // add one for checksum byte (not included) in packet length
-            return _length - GetFrameDataBytesRead() + 1;
-        }
+            _length - GetFrameDataBytesRead() + 1;
 
         // get unescaped packet length
         // get escaped packet length
