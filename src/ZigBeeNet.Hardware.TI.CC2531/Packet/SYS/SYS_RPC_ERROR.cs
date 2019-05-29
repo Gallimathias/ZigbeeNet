@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
+    [PacketParsing(ZToolCMD.SYS_RPC_ERROR)]
     public class SYS_RPC_ERROR : ZToolPacket
     {
         /// <name>TI.ZPI2.SYS_RPC_ERROR.ErrCmd0</name>
@@ -30,15 +31,15 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
             this.ErrCmd0 = num2;
             this.ErrCmd1 = num3;
             byte[] framedata = { num1, num2, num3 };
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RPC_ERROR), framedata);
+            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RPC_ERROR), framedata, 0, framedata.Length);
         }
 
-        public SYS_RPC_ERROR(byte[] framedata)
+        public SYS_RPC_ERROR(byte[] framedata, int offset, int length)
         {
-            this.Status = framedata[0];
-            this.ErrCmd0 = framedata[1];
-            this.ErrCmd1 = framedata[3];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RPC_ERROR), framedata);
+            this.Status = framedata[offset];
+            this.ErrCmd0 = framedata[offset + 1];
+            this.ErrCmd1 = framedata[offset + 3];
+            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RPC_ERROR), framedata, offset, length);
         }
 
         public override string ToString()

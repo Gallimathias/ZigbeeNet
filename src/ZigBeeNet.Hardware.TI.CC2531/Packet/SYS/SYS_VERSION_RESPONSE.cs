@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
+    [PacketParsing(ZToolCMD.SYS_VERSION_RESPONSE)]
     public class SYS_VERSION_RESPONSE : ZToolPacket //// implements ////IRESPONSE,ISYTEM /// </summary>
     {
     /// <name>TI.ZPI2.SYS_VERSION_RESPONSE.HwRev</name>
@@ -30,15 +31,15 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 
     /// <name>TI.ZPI2.SYS_VERSION_RESPONSE</name>
     /// <summary>Constructor</summary>
-    public SYS_VERSION_RESPONSE(byte[] framedata)
+    public SYS_VERSION_RESPONSE(byte[] framedata, int offset, int length)
     {
-        TransportRev = framedata[0];
-        Product = framedata[1];
-        MajorRel = framedata[2];
-        MinorRel = framedata[3];
-        HwRev = framedata[4];
+        TransportRev = framedata[offset];
+        Product = framedata[offset + 1];
+        MajorRel = framedata[offset + 2];
+        MinorRel = framedata[offset + 3];
+        HwRev = framedata[offset + 4];
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_VERSION_RESPONSE), framedata);
+        BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_VERSION_RESPONSE), framedata, offset, length);
     }
 }
 }

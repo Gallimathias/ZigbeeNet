@@ -7,6 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
     /// <summary>
     /// This command is sent by the device to the user after it receives a data request.
     /// </summary>
+    [PacketParsing(ZToolCMD.AF_DATA_CONFIRM)]
     public class AF_DATA_CONFIRM : ZToolPacket
     {
         /// <summary>
@@ -24,13 +25,13 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
         /// </summary>
         public byte TransId { get; private set; }
 
-        public AF_DATA_CONFIRM(byte[] framedata)
+        public AF_DATA_CONFIRM(byte[] framedata, int offset, int length)
         {
-            Status = (PacketStatus)framedata[0];
-            Endpoint = framedata[1];
-            TransId = framedata[2];
+            Status = (PacketStatus)framedata[offset];
+            Endpoint = framedata[offset + 1];
+            TransId = framedata[offset + 2];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_DATA_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_DATA_CONFIRM), framedata, offset, length);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
     /// <summary>
     /// This callback message is in response to incoming data to any of the registered endpoints on this device
     /// </summary>
+    [PacketParsing(ZToolCMD.AF_INCOMING_MSG)]
     public class AF_INCOMING_MSG : ZToolPacket
     {
         /// <summary>
@@ -71,31 +72,29 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
         /// </summary>
         public byte[] Data { get; private set; }
 
-        public AF_INCOMING_MSG(byte[] framedata)
+        public AF_INCOMING_MSG(byte[] framedata, int offset, int length)
         {
-            GroupId = new DoubleByte(framedata[1], framedata[0]);
-            ClusterId = new DoubleByte(framedata[3], framedata[2]);
-            SrcAddr = new ZToolAddress16(framedata[5], framedata[4]);
-            SrcEndpoint = framedata[6];
-            DstEndpoint = framedata[7];
-            WasBroadcast = framedata[8];
-            LinkQuality = framedata[9];
-            SecurityUse = framedata[10];
+            GroupId = new DoubleByte(framedata[offset + 1], framedata[offset]);
+            ClusterId = new DoubleByte(framedata[offset + 3], framedata[offset + 2]);
+            SrcAddr = new ZToolAddress16(framedata[offset + 5], framedata[offset + 4]);
+            SrcEndpoint = framedata[offset + 6];
+            DstEndpoint = framedata[offset + 7];
+            WasBroadcast = framedata[offset + 8];
+            LinkQuality = framedata[offset + 9];
+            SecurityUse = framedata[offset + 10];
             byte[] bytes = new byte[4];
-            bytes[3] = (byte)framedata[11];
-            bytes[2] = (byte)framedata[12];
-            bytes[1] = (byte)framedata[13];
-            bytes[0] = (byte)framedata[14];
+            bytes[3] = framedata[offset + 11];
+            bytes[2] = framedata[offset + 12];
+            bytes[1] = framedata[offset + 13];
+            bytes[0] = framedata[offset + 14];
+            //TimeStamp = BitConverter.ToInt32(framedata, offset + 11);
             TimeStamp = BitConverter.ToInt32(bytes, 0);
-            TransSeqNumber = framedata[15];
-            Len = framedata[16];
+            TransSeqNumber = framedata[offset + 15];
+            Len = framedata[offset + 16];
             Data = new byte[Len];
-            for (int i = 0; i < this.Data.Length; i++)
-            {
-                this.Data[i] = framedata[17 + i];
-            }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_INCOMING_MSG), framedata);
+            Buffer.BlockCopy(framedata, offset + 17, Data, 0, Len);
+            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_INCOMING_MSG), framedata, offset, length);
         }
     }
 }

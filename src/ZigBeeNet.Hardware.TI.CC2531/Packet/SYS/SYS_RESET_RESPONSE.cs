@@ -7,6 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
     /// <summary>
     /// This callback is sent by the device to indicate that a reset has occurred. 
     /// </summary>
+    [PacketParsing(ZToolCMD.SYS_RESET_RESPONSE)]
     public class SYS_RESET_RESPONSE : ZToolPacket
     {
         /// <summary>
