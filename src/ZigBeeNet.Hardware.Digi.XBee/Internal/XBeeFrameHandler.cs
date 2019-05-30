@@ -146,7 +146,7 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
             Log.Debug("XBeeFrameHandler clearing receive buffer.");
             while (true)
             {
-                byte? val = _serialPort.Read(100);
+                var val = _serialPort.Read(100);
                 if (val == null)
                 {
                     // Timeout
@@ -170,7 +170,7 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
 
             while (!_closeHandler)
             {
-                int? val = _serialPort.Read();
+                var val = _serialPort.Read();
                 if (val == null)
                 {
                     // Timeout
@@ -190,9 +190,9 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
                 if (escaped)
                 {
                     escaped = false;
-                    val = val ^ XBEE_XOR;
+                    val[0] = (byte)(val[0] ^ XBEE_XOR);
                 }
-                else if (val == XBEE_ESCAPE)
+                else if (val[0] == XBEE_ESCAPE)
                 {
                     escaped = true;
                     continue;
@@ -202,7 +202,7 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
                 {
                     case RxStateMachine.WAITING:
                         {
-                            if (val == XBEE_FLAG)
+                            if (val[0] == XBEE_FLAG)
                             {
                                 rxState = RxStateMachine.RECEIVE_LEN1;
                             }
@@ -210,16 +210,16 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
                         continue;
                     case RxStateMachine.RECEIVE_LEN1:
                         {
-                            inputBuffer[cnt++] = val;
+                            inputBuffer[cnt++] = val[0];
                             rxState = RxStateMachine.RECEIVE_LEN2;
-                            length += val << 8;
+                            length += val[0] << 8;
                         }
                         break;
                     case RxStateMachine.RECEIVE_LEN2:
                         {
-                            inputBuffer[cnt++] = val;
+                            inputBuffer[cnt++] = val[0];
                             rxState = RxStateMachine.RECEIVE_DATA;
-                            length += val + 3;
+                            length += val[0] + 3;
                             if (length > inputBuffer.Length)
                             {
                                 // Return null and let the system resync by searching for the next FLAG
@@ -230,8 +230,8 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Internal
                         break;
                     case RxStateMachine.RECEIVE_DATA:
                         {
-                            checksum += val;
-                            inputBuffer[cnt++] = val;
+                            checksum += val[0];
+                            inputBuffer[cnt++] = val[0];
                         }
                         break;
                     default:

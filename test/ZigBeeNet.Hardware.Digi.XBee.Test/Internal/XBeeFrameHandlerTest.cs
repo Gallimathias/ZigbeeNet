@@ -143,5 +143,8 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Test
         public void Write(byte[] value)
         {
         }
+
+        byte[] IZigBeePort.Read() => throw new NotImplementedException();
+        byte[] IZigBeePort.Read(int timeout) => throw new NotImplementedException();
     }
 }
