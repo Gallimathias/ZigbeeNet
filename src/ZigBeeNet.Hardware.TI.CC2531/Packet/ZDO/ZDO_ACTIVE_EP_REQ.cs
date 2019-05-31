@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_ACTIVE_EP_REQ : ZToolPacket
+    public class ZDO_ACTIVE_EP_REQ : ZToolMessage
     {
         public ZDO_ACTIVE_EP_REQ(ZToolAddress16 dstAddr, ZToolAddress16 nwkAddrOfInterest)
         {
@@ -15,7 +15,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             framedata[2] = nwkAddrOfInterest.Lsb;
             framedata[3] = nwkAddrOfInterest.Msb;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_ACTIVE_EP_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_ACTIVE_EP_REQ), framedata);
         }
     }
 }

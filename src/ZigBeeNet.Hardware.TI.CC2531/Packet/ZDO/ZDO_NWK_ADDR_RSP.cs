@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_NWK_ADDR_RSP : ZToolPacket //// implements IRESPONSE_CALLBACK,IZDO /// </summary>
+    public class ZDO_NWK_ADDR_RSP : ZToolMessage //// implements IRESPONSE_CALLBACK,IZDO /// </summary>
     {
         /// <name>TI.ZPI1.ZDO_NWK_ADDR_RSP.AssocDevList</name>
         /// <summary>Dynamic array, array of 16 bit short addresses - list of network address for associated devices. This
@@ -57,7 +57,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             {
                 this.AssocDevList[i] = new ZToolAddress16(framedata[14 + (i * 2)], framedata[13 + (i * 2)]);
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_NWK_ADDR_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_NWK_ADDR_RSP), framedata);
         }
 
         public override string ToString()

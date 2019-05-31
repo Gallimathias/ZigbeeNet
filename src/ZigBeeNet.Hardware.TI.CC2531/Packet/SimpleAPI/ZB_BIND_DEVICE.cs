@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// This command establishes or removes a ‘binding’ between two devices.  
     /// Once bound, an application can send messages to a device by referencing the commandId for the binding
     /// </summary>
-    public class ZB_BIND_DEVICE : ZToolPacket
+    public class ZB_BIND_DEVICE : ZToolMessage
     {
         /// <summary>
         /// TRUE to create a binding, FALSE to remove a binding
@@ -43,7 +43,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 framedata[i] = dst[i - 3];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_BIND_DEVICE), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_BIND_DEVICE), framedata);
         }
     }
 }

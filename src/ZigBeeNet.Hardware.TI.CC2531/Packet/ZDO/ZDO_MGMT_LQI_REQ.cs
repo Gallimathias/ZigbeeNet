@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This command is generated to request the destination device to return its neighbor table.
     /// </summary>
-    public class ZDO_MGMT_LQI_REQ : ZToolPacket
+    public class ZDO_MGMT_LQI_REQ : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_MGMT_LQI_REQ.DstAddr</name>
         /// <summary>Destination network address.</summary>
@@ -35,7 +35,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             framedata[0] = this.DstAddr.Lsb;
             framedata[1] = this.DstAddr.Msb;
             framedata[2] = this.StartIndex;
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MGMT_LQI_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MGMT_LQI_REQ), framedata);
         }
     }
 }

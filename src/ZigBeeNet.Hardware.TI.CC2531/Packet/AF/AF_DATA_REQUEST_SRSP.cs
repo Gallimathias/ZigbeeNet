@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
 {
-    public class AF_DATA_REQUEST_SRSP : ZToolPacket
+    public class AF_DATA_REQUEST_SRSP : ZToolMessage
     {
         public PacketStatus Status { get; private set; }
 
@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
         {
             Status = (PacketStatus)framedata[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_DATA_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.AF_DATA_SRSP), framedata);
         }
     }
 }

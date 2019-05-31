@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_BIND_RSP : ZToolPacket
+    public class ZDO_BIND_RSP : ZToolMessage
     {
         public ZToolAddress16 SrcAddr { get; private  set; }
 
@@ -17,7 +17,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             SrcAddr = new ZToolAddress16(data[1], data[0]);
             Status = (PacketStatus)data[2];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_BIND_RSP), data);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_BIND_RSP), data);
         }
     }
 }

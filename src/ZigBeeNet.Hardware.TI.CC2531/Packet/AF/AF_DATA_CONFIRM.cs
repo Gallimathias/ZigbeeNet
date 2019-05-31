@@ -5,10 +5,9 @@ using System.Text;
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
 {
     /// <summary>
-    /// This command is sent by the device to the user after it receives a data request.
+    /// This command is sent by the device to the user after it receives a data request. To confirm the data
     /// </summary>
-    [PacketParsing(ZToolCMD.AF_DATA_CONFIRM)]
-    public class AF_DATA_CONFIRM : ZToolPacket
+    public class AF_DATA_CONFIRM : ZToolMessage
     {
         /// <summary>
         /// Endpoint of the device 
@@ -25,13 +24,29 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
         /// </summary>
         public byte TransId { get; private set; }
 
-        public AF_DATA_CONFIRM(byte[] framedata, int offset, int length)
-        {
-            Status = (PacketStatus)framedata[offset];
-            Endpoint = framedata[offset + 1];
-            TransId = framedata[offset + 2];
+        public override int Size => 3; //Status 1byte + endpoint 1byte + transid 1byte
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_DATA_CONFIRM), framedata, offset, length);
+        internal AF_DATA_CONFIRM() : base(MessageId.AF_DATA_CONFIRM) { } //For serialization and deserialization
+        public AF_DATA_CONFIRM(byte endpoint, PacketStatus status, byte transId) 
+            : this()            
+        {
+            Endpoint = endpoint;
+            Status = status;
+            TransId = transId;
+        }
+
+        public override void Serialize(byte[] buffer, int offset)
+        {
+            buffer[offset] = (byte)Status;
+            buffer[offset + 1] = Endpoint;
+            buffer[offset + 2] = TransId;
+        }
+
+        public override void DeSerialize(byte[] buffer, int offset)
+        {
+            Status = (PacketStatus)buffer[offset];
+            Endpoint = buffer[offset + 1];
+            TransId = buffer[offset + 2];
         }
     }
 }

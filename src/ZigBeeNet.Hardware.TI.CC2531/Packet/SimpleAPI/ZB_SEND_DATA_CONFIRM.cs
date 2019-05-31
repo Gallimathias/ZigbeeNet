@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This callback indicates the data has been sent
     /// </summary>
-    public class ZB_SEND_DATA_CONFIRM : ZToolPacket
+    public class ZB_SEND_DATA_CONFIRM : ZToolMessage
     {
         /// <summary>
         /// Specifies the handle
@@ -24,7 +24,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
             Handle = framedata[0];
             Status = (PacketStatus)framedata[1];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_SEND_DATA_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_SEND_DATA_CONFIRM), framedata);
         }
     }
 }

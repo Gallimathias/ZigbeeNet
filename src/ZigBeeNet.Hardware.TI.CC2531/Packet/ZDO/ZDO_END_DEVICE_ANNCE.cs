@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_END_DEVICE_ANNCE : ZToolPacket //// implements IREQUEST,IZDO /// </summary>
+    public class ZDO_END_DEVICE_ANNCE : ZToolMessage //// implements IREQUEST,IZDO /// </summary>
     {
         /// <name>TI.ZPI1.ZDO_END_DEVICE_ANNCE.Capabilities</name>
         /// <summary>MAC capabilities</summary>
@@ -37,7 +37,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             {
                 framedata[i + 2] = bytes[7 - i];
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_END_DEVICE_ANNCE), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_END_DEVICE_ANNCE), framedata);
         }
 
         /// <name>TI.ZPI1.ZDO_END_DEVICE_ANNCE.CAPABILITY_INFO</name>

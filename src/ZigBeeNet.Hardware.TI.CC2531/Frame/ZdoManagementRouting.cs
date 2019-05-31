@@ -10,7 +10,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Frame
     public class ZdoManagementRouting : TiDongleReceivePacket
     {
 
-        public static ZigBeeApsFrame Create(ZToolPacket packet)
+        public static ZigBeeApsFrame Create(ZToolMessage packet)
         {
             ZigBeeApsFrame apsFrame = new ZigBeeApsFrame();
             apsFrame.Cluster = ZdoCommandType.GetValueByType(ZdoCommandType.CommandType.MANAGEMENT_ROUTING_RESPONSE).ClusterId;

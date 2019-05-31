@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This command initiates transmission of data to a peer device.
     /// </summary>
-    public class ZB_SEND_DATA_REQUEST : ZToolPacket
+    public class ZB_SEND_DATA_REQUEST : ZToolMessage
     {
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 framedata[i + 8] = this.PayloadValue[i];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_SEND_DATA_REQUEST), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_SEND_DATA_REQUEST), framedata);
         }
     }
 }

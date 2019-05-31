@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// A peer device can establish a binding to a device in the Allow Binding Mode by calling 
     /// zb_BindDevice with a destination address of NULL. 
     /// </summary>
-    public class ZB_ALLOW_BIND : ZToolPacket
+    public class ZB_ALLOW_BIND : ZToolMessage
     {
         /// <summary>
         /// The number of seconds to remain in the allow binding mode.  
@@ -26,7 +26,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
             byte[] framedata = new byte[1];
             framedata[0] = Timeout;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_ALLOW_BIND), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_ALLOW_BIND), framedata);
         }
     }
 }

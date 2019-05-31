@@ -4,14 +4,14 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
-    public class SYS_RESET : ZToolPacket
+    public class SYS_RESET : ZToolMessage
     {
         public SYS_RESET(byte resetType)
         {
             byte[] framedata = new byte[1];
             framedata[0] = resetType;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RESET), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_RESET), framedata);
         }
 
         /// <name>TI.ZPI1.SYS_RESET.RESET_TYPE</name>

@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This callback indicates the ZDO End Device Announce
     /// </summary>
-    public class ZDO_END_DEVICE_ANNCE_IND : ZToolPacket
+    public class ZDO_END_DEVICE_ANNCE_IND : ZToolMessage
     {
         /// <summary>
         /// Source address of the message
@@ -45,7 +45,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             IEEEAddr = new ZToolAddress64(BitConverter.ToInt64(framedata, 4));
             Capabilities = framedata[12];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_END_DEVICE_ANNCE_IND), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_END_DEVICE_ANNCE_IND), framedata);
         }
     }
 }

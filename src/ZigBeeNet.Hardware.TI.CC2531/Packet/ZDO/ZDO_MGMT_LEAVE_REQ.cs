@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// This command is generated to request a Management Leave Request for the target device and is used to remove
     /// devices from the network.
     /// </summary>
-    public class ZDO_MGMT_LEAVE_REQ : ZToolPacket
+    public class ZDO_MGMT_LEAVE_REQ : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_MGMT_LEAVE_REQ.DeviceAddress</name>
         /// <summary>The 64 bit IEEE Address of the device you want to leave.</summary>
@@ -43,7 +43,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                 framedata[2 + i] = this.DeviceAddress.Address[7 - i];
             }
             framedata[10] = this.RemoveChildren_Rejoin;
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MGMT_LEAVE_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MGMT_LEAVE_REQ), framedata);
         }
     }
 }

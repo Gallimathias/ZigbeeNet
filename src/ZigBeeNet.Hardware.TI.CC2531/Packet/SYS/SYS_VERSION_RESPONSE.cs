@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
-    [PacketParsing(ZToolCMD.SYS_VERSION_RESPONSE)]
-    public class SYS_VERSION_RESPONSE : ZToolPacket //// implements ////IRESPONSE,ISYTEM /// </summary>
+    [PacketParsing(MessageId.SYS_VERSION_RESPONSE)]
+    public class SYS_VERSION_RESPONSE : ZToolMessage //// implements ////IRESPONSE,ISYTEM /// </summary>
     {
     /// <name>TI.ZPI2.SYS_VERSION_RESPONSE.HwRev</name>
     /// <summary>Hardware revision</summary>
@@ -39,7 +39,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
         MinorRel = framedata[offset + 3];
         HwRev = framedata[offset + 4];
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_VERSION_RESPONSE), framedata, offset, length);
+        BuildPacket(new DoubleByte((ushort)MessageId.SYS_VERSION_RESPONSE), framedata, offset, length);
     }
 }
 }

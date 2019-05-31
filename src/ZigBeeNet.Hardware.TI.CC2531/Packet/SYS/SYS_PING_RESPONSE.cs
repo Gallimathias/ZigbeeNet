@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
-    [PacketParsing(ZToolCMD.SYS_PING_RESPONSE)]
-    public class SYS_PING_RESPONSE : ZToolPacket
+    [PacketParsing(MessageId.SYS_PING_RESPONSE)]
+    public class SYS_PING_RESPONSE : ZToolMessage
     {
         /// <name>TI.ZPI1.SYS_PING_RESPONSE.Capabilities</name>
         /// <summary>This field represents the interfaces that this device can handle (compiled into the device).</summary>
@@ -25,14 +25,14 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
             framedata[0] = capabilities1.Lsb;
             framedata[1] = capabilities1.Msb;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_PING_RESPONSE), framedata, 0 , framedata.Length);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_PING_RESPONSE), framedata, 0 , framedata.Length);
         }
 
         public SYS_PING_RESPONSE(byte[] framedata, int offset, int length)
         {
             this.Capabilities = new DoubleByte(framedata[offset + 1], framedata[offset + 0]).Value;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_PING_RESPONSE), framedata, offset, length);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_PING_RESPONSE), framedata, offset, length);
         }
 
         /// <name>TI.ZPI1.SYS_PING_RESPONSE.CAPABILITIES</name>

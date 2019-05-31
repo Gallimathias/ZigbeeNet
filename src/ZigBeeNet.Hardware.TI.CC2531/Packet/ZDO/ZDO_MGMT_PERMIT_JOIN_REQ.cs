@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This command is generated to set the Permit Join for the destination device
     /// </summary>
-    public class ZDO_MGMT_PERMIT_JOIN_REQ : ZToolPacket
+    public class ZDO_MGMT_PERMIT_JOIN_REQ : ZToolMessage
     {
         /// <summary>
         /// Destination address type: 0x02 – Address 16 bit, 0xFF – Broadcast
@@ -44,7 +44,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             data.Add(Duration);
             data.Add(TCSignificance);
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MGMT_PERMIT_JOIN_REQ), data.ToArray());
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MGMT_PERMIT_JOIN_REQ), data.ToArray());
         }
     }
 }

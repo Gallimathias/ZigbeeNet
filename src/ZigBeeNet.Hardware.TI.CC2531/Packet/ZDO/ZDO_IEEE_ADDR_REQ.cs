@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// This command will request a device’s IEEE 64-bit address.  You must subscribe to “ZDO IEEE Address Response” to receive 
     /// the data response to this message.  The response message listed below only indicates whether or not the message was received properly
     /// </summary>
-    public class ZDO_IEEE_ADDR_REQ : ZToolPacket
+    public class ZDO_IEEE_ADDR_REQ : ZToolMessage
     {
         /// <summary>
         /// Specifies the short address of the device
@@ -37,7 +37,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             data.Add((byte)ReqType);
             data.Add(StartIndex);
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_IEEE_ADDR_REQ), data.ToArray());
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_IEEE_ADDR_REQ), data.ToArray());
         }
 
         public enum RequestType : byte

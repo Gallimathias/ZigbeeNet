@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
 {
-    public class ZB_BIND_CONFIRM : ZToolPacket
+    public class ZB_BIND_CONFIRM : ZToolMessage
     {
         /// <name>TI.ZPI2.ZB_BIND_CONFIRM.CommandId</name>
         /// <summary>CommandId</summary>
@@ -25,7 +25,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
         {
             this.CommandId = new DoubleByte(framedata[1], framedata[0]);
             this.Status = framedata[2];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_FIND_DEVICE_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_FIND_DEVICE_CONFIRM), framedata);
         }
 
         public override string ToString()

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_END_DEVICE_ANNCE_SRSP : ZToolPacket //// implements IRSPONSE,IZDO /// </summary>
+    public class ZDO_END_DEVICE_ANNCE_SRSP : ZToolMessage //// implements IRSPONSE,IZDO /// </summary>
     {
         /// <name>TI.ZPI1.ZDO_END_DEVICE_ANNCE_SRSP.Status</name>
         /// <summary>Status</summary>
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         public ZDO_END_DEVICE_ANNCE_SRSP(byte[] framedata)
         {
             this.Status = framedata[0];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_END_DEVICE_ANNCE_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_END_DEVICE_ANNCE_SRSP), framedata);
         }
 
         public override string ToString()

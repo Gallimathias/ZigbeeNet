@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This callback message indicates the ZDO state change.
     /// </summary>
-    public class ZDO_STATE_CHANGE_IND : ZToolPacket
+    public class ZDO_STATE_CHANGE_IND : ZToolMessage
     {
         /// <summary>
         /// Specifies the changed ZDO state
@@ -18,7 +18,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         {
             Status = (DeviceState)data[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_STATE_CHANGE_IND), data);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_STATE_CHANGE_IND), data);
         }
     }
 }

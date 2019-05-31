@@ -7,8 +7,8 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
     /// <summary>
     /// This callback is sent by the device to indicate that a reset has occurred. 
     /// </summary>
-    [PacketParsing(ZToolCMD.SYS_RESET_RESPONSE)]
-    public class SYS_RESET_RESPONSE : ZToolPacket
+    [PacketParsing(MessageId.SYS_RESET_RESPONSE)]
+    public class SYS_RESET_RESPONSE : ZToolMessage
     {
         /// <summary>
         /// Hardware revision number
@@ -49,7 +49,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
             MinorRel = framedata[offset + 4];
             HwRev = framedata[offset + 5];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_RESET_RESPONSE), framedata, offset, length);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_RESET_RESPONSE), framedata, offset, length);
         }
 
         public enum ResetType : byte

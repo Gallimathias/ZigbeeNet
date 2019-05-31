@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
 {
-    public class UTIL_GET_DEVICE_INFO_RESPONSE : ZToolPacket 
+    public class UTIL_GET_DEVICE_INFO_RESPONSE : ZToolMessage 
     {
     /// <name>TI.ZPI1.SYS_GET_DEVICE_INFO_RESPONSE.AssocDevicesList</name>
     /// <summary>Dynamic array; Assoc Devices List</summary>
@@ -59,7 +59,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
             AssocDevicesList[i] = new DoubleByte(framedata[14 + (i * 2)], framedata[15 + (i * 2)]);
         }
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.UTIL_GET_DEVICE_INFO_RESPONSE), framedata);
+        BuildPacket(new DoubleByte((ushort)MessageId.UTIL_GET_DEVICE_INFO_RESPONSE), framedata);
     }
 
     public override string ToString()

@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_UNBIND_RSP : ZToolPacket
+    public class ZDO_UNBIND_RSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_UNBIND_RSP.SrcAddress</name>
         /// <summary>the message's source network address</summary>
@@ -24,7 +24,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         {
             this.SrcAddress = new ZToolAddress16(framedata[1], framedata[0]);
             this.Status = framedata[2];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_UNBIND_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_UNBIND_RSP), framedata);
         }
 
         public override string ToString()

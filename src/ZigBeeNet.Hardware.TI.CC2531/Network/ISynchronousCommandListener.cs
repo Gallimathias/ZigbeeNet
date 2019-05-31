@@ -11,6 +11,6 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// Receives command response.
         /// </summary>
         /// <param name="packet">the command packet</param>
-        void ReceivedCommandResponse(ZToolPacket packet);
+        void ReceivedCommandResponse(ZToolMessage packet);
     }
 }

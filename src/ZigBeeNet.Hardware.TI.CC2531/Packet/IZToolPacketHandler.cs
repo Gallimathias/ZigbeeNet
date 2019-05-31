@@ -11,9 +11,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
         /// A callback used by <see cref="ZToolPacketParser"> for notifying that a new packet is arrived
         /// <b>NOTE</b>: Bad packet would not be notified
         ///
-        /// <param name="response">the new <see cref="ZToolPacket"> parsed by <see cref="ZToolPacketParser"></param>
+        /// <param name="response">the new <see cref="ZToolMessage"> parsed by <see cref="ZToolPacketParser"></param>
         /// </summary>
-        void HandlePacket(ZToolPacket response);
+        void HandlePacket(ZToolMessage response);
 
         /// <summary>
         /// A callback used by <see cref="ZToolPacketParser"> for notifying that an <see cref="Exception"> has<br>

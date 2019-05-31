@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_USER_DESC_SET_SRSP : ZToolPacket
+    public class ZDO_USER_DESC_SET_SRSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_USER_DESC_SET_SRSP.Status</name>
         /// <summary>Status</summary>
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         public ZDO_USER_DESC_SET_SRSP(byte[] framedata)
         {
             this.Status = framedata[0];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_USER_DESC_SET_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_USER_DESC_SET_SRSP), framedata);
         }
 
         public override string ToString()

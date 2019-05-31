@@ -9,11 +9,11 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// from nonvolatile memory and the device joins its network.  The ZigBee stack calls the zb_StartConfirm callback function 
     /// when the startup process completes. After the start request process completes, the device is ready to send, receive, and route network traffic
     /// </summary>
-    public class ZB_START_REQUEST : ZToolPacket
+    public class ZB_START_REQUEST : ZToolMessage
     {
         public ZB_START_REQUEST()
         {
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_START_REQUEST), new byte[0]);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_START_REQUEST), new byte[0]);
         }
     }
 }

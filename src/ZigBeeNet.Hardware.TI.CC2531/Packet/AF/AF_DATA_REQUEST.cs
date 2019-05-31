@@ -10,7 +10,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
     /// <summary>
     /// This command is used by the tester to build and send a message through AF layer
     /// </summary>
-    public class AF_DATA_REQUEST : ZToolPacket
+    public class AF_DATA_REQUEST : ZToolMessage
     {
         /// <summary>
         /// Specifies the cluster ID 
@@ -91,7 +91,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
                 framedata[10 + i] = data[i];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_DATA_REQUEST), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.AF_DATA_REQUEST), framedata);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This callback message is in response to the ZDO Node Descriptor Request
     /// </summary>
-    public class ZDO_NODE_DESC_RSP : ZToolPacket
+    public class ZDO_NODE_DESC_RSP : ZToolMessage
     {
         /// <summary>
         /// The message’s source network address
@@ -108,7 +108,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                     ServerMask = new DoubleByte(framedata[16], framedata[17]);
                 }
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_NODE_DESC_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_NODE_DESC_RSP), framedata);
         }
 
         public enum CapabilitiesFlags

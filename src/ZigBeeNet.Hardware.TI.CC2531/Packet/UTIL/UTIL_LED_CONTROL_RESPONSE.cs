@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
 {
-    public class UTIL_LED_CONTROL_RESPONSE : ZToolPacket
+    public class UTIL_LED_CONTROL_RESPONSE : ZToolMessage
     {
         public PacketStatus Status;
 
@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
         {
             Status = (PacketStatus)framedata[0];
 
-            base.BuildPacket(new DoubleByte((ushort)ZToolCMD.UTIL_LED_CONTROL_RESPONSE), framedata);
+            base.BuildPacket(new DoubleByte((ushort)MessageId.UTIL_LED_CONTROL_RESPONSE), framedata);
         }
     }
 }

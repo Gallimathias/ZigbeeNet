@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_USER_DESC_CONF : ZToolPacket
+    public class ZDO_USER_DESC_CONF : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_USER_DESC_CONF.SrcAddress</name>
         /// <summary>Source address of the message</summary>
@@ -33,7 +33,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             {
                 this.NwkAddr = new ZToolAddress16();
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_USER_DESC_CONF), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_USER_DESC_CONF), framedata);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
     {
         public event EventHandler<DriverStatus> OnStateChanged;
         
-        public void ReceivedAsynchronousCommand(ZToolPacket packet)
+        public void ReceivedAsynchronousCommand(ZToolMessage packet)
         {
             if(packet is ZDO_STATE_CHANGE_IND stateInd)
             {
@@ -27,7 +27,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
             }
         }
 
-        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolPacket packet)
+        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolMessage packet)
         {
             // Processing not requiered
             throw new NotImplementedException(); // TODO: Realy throwing an exception ?

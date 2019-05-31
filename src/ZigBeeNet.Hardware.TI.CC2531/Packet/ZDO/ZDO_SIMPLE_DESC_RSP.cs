@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This callback message is in response to the ZDO Simple Descriptor Request 
     /// </summary>
-    public class ZDO_SIMPLE_DESC_RSP : ZToolPacket
+    public class ZDO_SIMPLE_DESC_RSP : ZToolMessage
     {
         private const int MIN_DESC_LEN = 8;
 
@@ -104,7 +104,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                             framedata[(i * 2) + ((NumInClusters) * 2) + 14]);
                 }
 
-                BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_SIMPLE_DESC_RSP), framedata);
+                BuildPacket(new DoubleByte((ushort)MessageId.ZDO_SIMPLE_DESC_RSP), framedata);
             }
         }
     }

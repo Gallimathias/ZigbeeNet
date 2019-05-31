@@ -7,11 +7,24 @@ using System.Threading.Tasks;
 using ZigBeeNet.Hardware.TI.CC2531.Packet;
 using Serilog;
 using ZigBeeNet.Transport;
+using System.Reflection;
+using System.Linq;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 {
     public class ZToolPacketParser
     {
+        private static readonly Dictionary<MessageId, Type> parserDictionary;
+
+        static ZToolPacketParser()
+            => parserDictionary = Assembly
+                    .GetAssembly(typeof(ZToolMessage))
+                    .GetTypes()
+                    .Where(t => typeof(ZToolMessage).IsAssignableFrom(t) && t.GetCustomAttribute<PacketParsingAttribute>() != null)
+                    .ToDictionary(
+                        t => t.GetCustomAttribute<PacketParsingAttribute>().CMD,
+                        t => t);
+
         /// <summary>
         /// The packet handler.
         /// </summary>
@@ -63,10 +76,10 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
                     {
                         // inputStream.mark(256);
                         //var packetStream = new ZToolPacketStream(_port);
-                        ZToolPacket response = ZToolPacketStream.ParsePacket(val, 0, val.Length);
+                        ZToolMessage response = ParsePacket(val, 0, val.Length);
 
                         Log.Verbose("Response is {Type} -> {Response}", response.GetType().Name, response);
-                        if (response.Error)
+                        if (response.Error) //TODO implement error message
                         {
                             Log.Debug("Received a BAD PACKET {Response}", response.ToString());
                             // inputStream.reset();
@@ -109,6 +122,52 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
         public bool IsAlive()
         {
             return _parserTask != null && _parserTask.Status == TaskStatus.Running;
+        }
+
+        public static ZToolMessage GetMessageById(MessageId id)
+        {
+            if (parserDictionary.TryGetValue(id, out var type))
+                return Activator.CreateInstance(type) as ZToolMessage;
+
+            //TODO: Return generic message
+            //TODO: implement generic message
+            Log.Warning("Unknown command ID: {Command}", id);
+            return new ZToolMessage(new DoubleByte((ushort)id), payload);
+        }
+
+        public static ZToolMessage ParsePacket(byte[] data, int offset, int dataLength)
+        {
+            if (dataLength < 5)
+                throw new ArgumentException($"{nameof(dataLength)} is lower than 5", nameof(dataLength));
+
+            if (offset < 0)
+                throw new ArgumentException($"{nameof(offset)} is lower than 0", nameof(offset));
+
+            if (data[offset] != ZToolPacket.START_BYTE)
+                throw new ArgumentException($"{nameof(data)} is not valid {nameof(ZToolPacket)}", nameof(data));
+
+            Exception exception;
+            try
+            {
+                var packet = ZToolPacket.Parse(data, offset, dataLength);
+                var response = GetMessageById((MessageId)packet.CMD.Value);
+                response.DeSerialize(packet.Payload, 0);
+                return response;
+            }
+            catch (Exception e)
+            {
+                Log.Error("Packet parsing failed due to exception.", e);
+                exception = e;
+            }
+            ZToolMessage exceptionResponse = new ErrorPacket();
+
+            if (exception != null)
+            {
+                exceptionResponse.Error = true; //TODO: implement error message
+                exceptionResponse.ErrorMsg = exception.Message;
+            }
+
+            return exceptionResponse;
         }
 
     }

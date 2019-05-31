@@ -10,7 +10,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// On your ZAP you don't need to take any action related to this command it will all depend if you want to use this 
     /// information in your application. If you have no use for it then do nothing when this command is received.
     /// </summary>
-    public class ZDO_TC_DEVICE_IND : ZToolPacket
+    public class ZDO_TC_DEVICE_IND : ZToolMessage
     {
         public ZToolAddress64 IeeeAddr { get; private set; }
 
@@ -29,7 +29,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             IeeeAddr = new ZToolAddress64(bytes);
             NwkAddr = new ZToolAddress16(framedata[11], framedata[10]);
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_TC_DEVICE_IND), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_TC_DEVICE_IND), framedata);
         }
     }
 }

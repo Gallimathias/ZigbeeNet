@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_BIND_REQ_SRSP : ZToolPacket
+    public class ZDO_BIND_REQ_SRSP : ZToolMessage
     {
         public PacketStatus Status { get; private set; }
 
@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         {
             Status = (PacketStatus)data[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_BIND_REQ_SRSP), data);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_BIND_REQ_SRSP), data);
         }
     }
 }

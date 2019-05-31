@@ -8,8 +8,8 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
     /// <summary>
     /// This callback message is in response to incoming data to any of the registered endpoints on this device
     /// </summary>
-    [PacketParsing(ZToolCMD.AF_INCOMING_MSG)]
-    public class AF_INCOMING_MSG : ZToolPacket
+    [PacketParsing(MessageId.AF_INCOMING_MSG)]
+    public class AF_INCOMING_MSG : ZToolMessage
     {
         /// <summary>
         /// Specifies the group ID of the device
@@ -94,7 +94,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
             Data = new byte[Len];
 
             Buffer.BlockCopy(framedata, offset + 17, Data, 0, Len);
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_INCOMING_MSG), framedata, offset, length);
+            BuildPacket(new DoubleByte((ushort)MessageId.AF_INCOMING_MSG), framedata, offset, length);
         }
     }
 }

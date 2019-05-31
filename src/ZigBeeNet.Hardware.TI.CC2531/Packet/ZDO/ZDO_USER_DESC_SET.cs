@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_USER_DESC_SET : ZToolPacket
+    public class ZDO_USER_DESC_SET : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_USER_DESC_SET.DescLen</name>
         /// <summary>Length, in bytes, of the user descriptor.</summary>
@@ -53,7 +53,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             {
                 framedata[i + 5] = this.Descriptor[i];
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_USER_DESC_SET), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_USER_DESC_SET), framedata);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
 {
-    public class UTIL_SET_PANID : ZToolPacket
+    public class UTIL_SET_PANID : ZToolMessage
     {
     /// <name>TI.ZPI1.SYS_SET_PANID.PanID</name>
     /// <summary>PanID.</summary>
@@ -26,14 +26,14 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
         framedata[0] = this.PanID.Msb;
         framedata[1] = this.PanID.Lsb;
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.UTIL_SET_PANID), framedata);
+        BuildPacket(new DoubleByte((ushort)MessageId.UTIL_SET_PANID), framedata);
     }
 
     public UTIL_SET_PANID(byte[] framedata)
     {
         this.PanID = new DoubleByte(framedata[1], framedata[0]);
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.UTIL_SET_PANID), framedata);
+        BuildPacket(new DoubleByte((ushort)MessageId.UTIL_SET_PANID), framedata);
     }
 }
 }

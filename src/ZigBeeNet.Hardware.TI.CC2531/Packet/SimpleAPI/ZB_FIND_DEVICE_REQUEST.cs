@@ -11,7 +11,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// must both be a member of the same network.  When the search is complete, 
     /// the zv_FindDeviceConfirm callback function is called
     /// </summary>
-    public class ZB_FIND_DEVICE_REQUEST : ZToolPacket
+    public class ZB_FIND_DEVICE_REQUEST : ZToolMessage
     {
         /// <summary>
         /// Specifies the value to search on
@@ -22,7 +22,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
         {
             SearchKey = searchKey;
             byte[] framedata = ByteUtils.ConvertLongtoMultiByte(SearchKey);
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_FIND_DEVICE_REQUEST), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_FIND_DEVICE_REQUEST), framedata);
         }
     }
 }

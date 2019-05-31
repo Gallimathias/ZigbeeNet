@@ -5,7 +5,7 @@ using static ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI.ZB_GET_DEVICE_INFO;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
 {
-    public class ZB_GET_DEVICE_INFO_RSP : ZToolPacket
+    public class ZB_GET_DEVICE_INFO_RSP : ZToolMessage
     {
         public DEV_INFO_TYPE Param { get; private set; }
 
@@ -21,7 +21,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 this.Value[i] = framedata[i + 1];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_GET_DEVICE_INFO_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_GET_DEVICE_INFO_RSP), framedata);
         }
     }
 }

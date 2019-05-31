@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This command is used to control the joining permissions and thus allows or disallows new devices from joining the network
     /// </summary>
-    public class ZB_PERMIT_JOINING_REQUEST : ZToolPacket
+    public class ZB_PERMIT_JOINING_REQUEST : ZToolMessage
     {
         /// <summary>
         /// The destination parameter indicates the address of the device for which the joining permissions should be set. 
@@ -28,7 +28,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
             data.AddRange(Destination.GetBytes());
             data.Add(Timeout);
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_PERMIT_JOINING_REQUEST), data.ToArray());
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_PERMIT_JOINING_REQUEST), data.ToArray());
         }
     }
 }

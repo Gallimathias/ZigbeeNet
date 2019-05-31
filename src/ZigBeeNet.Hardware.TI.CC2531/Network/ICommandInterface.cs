@@ -25,7 +25,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// Sends packet.
         /// </summary>
         /// <param name="packet">the packet</param>
-        void SendPacket(ZToolPacket packet);
+        void SendPacket(ZToolMessage packet);
 
         /// <summary>
         /// Sends synchronous command packet.
@@ -33,13 +33,13 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// <param name="packet">the command packet</param>
         /// <param name="listener">the synchronous command listener</param>
         /// <param name="timeoutMillis">the timeout in milliseconds.</param>
-        void SendSynchronousCommand(ZToolPacket packet, ISynchronousCommandListener listener, long timeoutMillis);
+        void SendSynchronousCommand(ZToolMessage packet, ISynchronousCommandListener listener, long timeoutMillis);
 
         /// <summary>
         /// Sends asynchronous command packet.
         /// </summary>
         /// <param name="packet">the command packet</param>
-        void SendAsynchronousCommand(ZToolPacket packet);
+        void SendAsynchronousCommand(ZToolMessage packet);
 
         /// <summary>
         /// Sends raw command packet

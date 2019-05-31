@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
-    [PacketParsing(ZToolCMD.SYS_TEST_LOOPBACK_SRSP)]
-    public class SYS_TEST_LOOPBACK_SRSP : ZToolPacket
+    [PacketParsing(MessageId.SYS_TEST_LOOPBACK_SRSP)]
+    public class SYS_TEST_LOOPBACK_SRSP : ZToolMessage
     {
         public byte[] TestData;
 
@@ -18,7 +18,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
         {
             this.TestData = new byte[length];
             Buffer.BlockCopy(framedata, offset, TestData, 0, length);
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_TEST_LOOPBACK_SRSP), framedata, offset, length);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_TEST_LOOPBACK_SRSP), framedata, offset, length);
         }
     }
 }

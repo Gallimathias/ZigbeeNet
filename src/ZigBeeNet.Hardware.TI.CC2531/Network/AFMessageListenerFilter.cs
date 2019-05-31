@@ -21,7 +21,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// pass the message on to any listeners.
         /// </summary>
         /// <param name="packet"></param>
-        public void ReceivedAsynchronousCommand(ZToolPacket packet)
+        public void ReceivedAsynchronousCommand(ZToolMessage packet)
         {
             if(packet is AF_INCOMING_MSG msg)
             {
@@ -52,7 +52,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
             }
         }
 
-        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolPacket packet)
+        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolMessage packet)
         {
             // No need to handle unclaimed responses here
         }

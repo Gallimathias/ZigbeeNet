@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This callback is called by the ZigBee stack when a find device operation completes
     /// </summary>
-    public class ZB_FIND_DEVICE_CONFIRM : ZToolPacket
+    public class ZB_FIND_DEVICE_CONFIRM : ZToolMessage
     {
         /// <summary>
         /// The type of search that was performed
@@ -35,7 +35,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 this.Result[i] = framedata[i + 3];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_FIND_DEVICE_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_FIND_DEVICE_CONFIRM), framedata);
         }
     }
 }

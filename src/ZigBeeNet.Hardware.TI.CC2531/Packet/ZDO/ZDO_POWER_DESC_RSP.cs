@@ -14,7 +14,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// the node and is mandatory for each node. There shall be only one node
     /// power descriptor in a node.
     /// </summary>
-    public class ZDO_POWER_DESC_RSP : ZToolPacket
+    public class ZDO_POWER_DESC_RSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_NODE_DESC_RSP.NWKAddrOfInterest</name>
         /// <summary>Device's short address of this Node descriptor</summary>
@@ -51,7 +51,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                 this.CurrentSource = (framedata[6] & (0x0F));
                 this.CurrentLevel = (framedata[6] & (0xF0)) >> 4;
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_POWER_DESC_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_POWER_DESC_RSP), framedata);
         }
 
         public override string ToString()

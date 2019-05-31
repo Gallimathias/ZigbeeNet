@@ -10,16 +10,16 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// for instance, so that the USB host does not have to contend with the USB H/W resetting 
     /// (and thus causing the USB host to re-enumerate the device which can cause an open virtual serial port to hang.) 
     /// </summary>
-    public class ZB_SYSTEM_RESET : ZToolPacket
+    public class ZB_SYSTEM_RESET : ZToolMessage
     {
         public ZB_SYSTEM_RESET()
         {
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_SYSTEM_RESET), new byte[0]);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_SYSTEM_RESET), new byte[0]);
         }
 
         public ZB_SYSTEM_RESET(byte[] framedata)
         {
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_SYSTEM_RESET), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_SYSTEM_RESET), framedata);
         }
     }
 }

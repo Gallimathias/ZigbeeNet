@@ -5,7 +5,7 @@ using ZigBeeNet.Extensions;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
 {
-    public class ZB_PERMIT_JOINING_REQUEST_RSP : ZToolPacket
+    public class ZB_PERMIT_JOINING_REQUEST_RSP : ZToolMessage
     {
         public byte Status { get; private set; }
 
@@ -13,7 +13,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
         {
             Status = data[0];
             
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_PERMIT_JOINING_REQUEST_RSP), data);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_PERMIT_JOINING_REQUEST_RSP), data);
         }
     }
 }

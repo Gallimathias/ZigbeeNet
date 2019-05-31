@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_USER_DESC_REQ : ZToolPacket
+    public class ZDO_USER_DESC_REQ : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_USER_DESC_REQ.DstAddr</name>
         /// <summary>destination address</summary>
@@ -25,7 +25,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             framedata[2] = this.NwkAddr.Lsb;
             framedata[3] = this.NwkAddr.Msb;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_USER_DESC_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_USER_DESC_REQ), framedata);
         }
     }
 }

@@ -2,7 +2,7 @@
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 {
     // Source: https://github.com/zsmartsystems/com.zsmartsystems.zigbee/blob/master/com.zsmartsystems.zigbee.dongle.cc2531/src/main/java/com/zsmartsystems/zigbee/dongle/cc2531/network/packet/ZToolCMD.java
-    public enum ZToolCMD : ushort
+    public enum MessageId : ushort
     {
         /// <summary>
         /// AF Data confirm.

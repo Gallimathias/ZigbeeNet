@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
 {
-    public class ZB_APP_REGISTER_REQUEST : ZToolPacket
+    public class ZB_APP_REGISTER_REQUEST : ZToolMessage
     {
         /// <name>TI.ZPI2.ZB_APP_REGISTER_REQUEST.AppEndPoint</name>
         /// <summary>The endpoint of the device on which this application should reside ( value 1 through 240 ). This should
@@ -82,7 +82,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 framedata[(i * 2) + ((this.InputCommandsList.Length) * 2) + 9] = this.OutputCommandsList[i].Lsb;
                 framedata[(i * 2) + ((this.InputCommandsList.Length) * 2) + 10] = this.OutputCommandsList[i].Msb;
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_APP_REGISTER_REQUEST), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_APP_REGISTER_REQUEST), framedata);
 
         }
     }

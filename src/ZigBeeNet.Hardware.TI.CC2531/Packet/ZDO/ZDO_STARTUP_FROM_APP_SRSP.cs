@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_STARTUP_FROM_APP_SRSP : ZToolPacket
+    public class ZDO_STARTUP_FROM_APP_SRSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_STARTUP_FROM_APP_SRSP.Status</name>
         /// <summary>Status</summary>
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         public ZDO_STARTUP_FROM_APP_SRSP(byte[] framedata)
         {
             Status = framedata[0];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_STARTUP_FROM_APP_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_STARTUP_FROM_APP_SRSP), framedata);
         }
 
 

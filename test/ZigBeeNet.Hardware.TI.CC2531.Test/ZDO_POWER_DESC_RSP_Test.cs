@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
         [Fact]
         public void testReceive()
         {
-            ZToolPacket data = GetPacket("FE 07 45 83 00 00 00 00 00 10 C1 10");
+            ZToolMessage data = GetPacket("FE 07 45 83 00 00 00 00 00 10 C1 10");
 
             ZigBeeApsFrame apsFrame = ZdoPowerDescriptor.Create(data);
 

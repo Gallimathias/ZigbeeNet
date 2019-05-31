@@ -11,12 +11,12 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// Called when asynchronous command has been received.
         /// </summary>
         /// <param name="packet"></param>
-        void ReceivedAsynchronousCommand(ZToolPacket packet);
+        void ReceivedAsynchronousCommand(ZToolMessage packet);
 
         /// <summary>
         /// Called when unclaimed synchronous command response has been received.
         /// </summary>
         /// <param name="packet"></param>
-        void ReceivedUnclaimedSynchronousCommandResponse(ZToolPacket packet);
+        void ReceivedUnclaimedSynchronousCommandResponse(ZToolMessage packet);
     }
 }

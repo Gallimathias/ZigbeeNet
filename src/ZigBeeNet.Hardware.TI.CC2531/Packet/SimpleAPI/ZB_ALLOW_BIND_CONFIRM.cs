@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This callback indicates another device attempted to bind to this device
     /// </summary>
-    public class ZB_ALLOW_BIND_CONFIRM : ZToolPacket
+    public class ZB_ALLOW_BIND_CONFIRM : ZToolMessage
     {
         /// <summary>
         /// Contains the address of the device attempted to bind to this device
@@ -20,7 +20,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
             Source = new ZToolAddress16(framedata[1], framedata[0]);
 
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_ALLOW_BIND_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_ALLOW_BIND_CONFIRM), framedata);
         }
     }
 }

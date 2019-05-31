@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This callback is called asynchronously by the ZigBee stack to notify the application when data is received from a peer device
     /// </summary>
-    public class ZB_RECEIVE_DATA_INDICATION : ZToolPacket
+    public class ZB_RECEIVE_DATA_INDICATION : ZToolMessage
     {
         /// <summary>
         /// Specifies the short address of the peer device that sent the data
@@ -42,7 +42,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 Data[i] = framedata[i + 6];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_RECEIVE_DATA_INDICATION), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_RECEIVE_DATA_INDICATION), framedata);
         }
     }
 }

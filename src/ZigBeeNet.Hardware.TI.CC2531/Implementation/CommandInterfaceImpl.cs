@@ -115,9 +115,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         ///
         /// <param name="packet">the packet</param>
         /// </summary>
-        public void HandlePacket(ZToolPacket packet)
+        public void HandlePacket(ZToolMessage packet)
         {
-            DoubleByte cmdId = packet.CMD;
+            DoubleByte cmdId = packet.CMD; //TODO: implement is Async prop
             switch (cmdId.Msb & 0xE0)
             {
                 // Received incoming message which can be either message from dongle or remote device.
@@ -141,8 +141,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <summary>
         /// Send packet to dongle.
         /// </summary>
-        public void SendPacket(ZToolPacket packet)
+        public void SendPacket(ZToolMessage packet)
         {
+            //TODO: Message to packet
             Log.Debug("-->  {Type} ({Packet}) ", packet.GetType().Name, packet);
             byte[] pck = packet.Packet;
             SendRaw(pck);
@@ -184,7 +185,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <param name="timeoutMillis">the timeout</param>
         /// @throws IOException if IO exception occurs in packet sending
         /// </summary>
-        public void SendSynchronousCommand(ZToolPacket packet, ISynchronousCommandListener listener, long timeoutMillis)
+        public void SendSynchronousCommand(ZToolMessage packet, ISynchronousCommandListener listener, long timeoutMillis)
         {
             if (timeoutMillis == -1L)
             {
@@ -257,7 +258,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <param name="packet">the packet.</param>
         /// @throws IOException if IO exception occurs in packet sending.
         /// </summary>
-        public void SendAsynchronousCommand(ZToolPacket packet)
+        public void SendAsynchronousCommand(ZToolMessage packet)
         {
             byte value = (byte)(packet.CMD.Msb & 0xE0);
             if (value != 0x40)
@@ -287,7 +288,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         ///
         /// <param name="packet">the received packet</param>
         /// </summary>
-        private void NotifySynchronousCommand(ZToolPacket packet)
+        private void NotifySynchronousCommand(ZToolMessage packet)
         {
             DoubleByte cmdId = packet.CMD;
             lock (_synchronousCommandListeners)
@@ -364,7 +365,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         ///
         /// <param name="packet">the packet containing the message</param>
         /// </summary>
-        private void NotifyAsynchronousCommand(ZToolPacket packet)
+        private void NotifyAsynchronousCommand(ZToolMessage packet)
         {
             IAsynchronousCommandListener[] listeners;
 

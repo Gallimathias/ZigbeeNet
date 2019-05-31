@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_NODE_DESC_REQ_SRSP : ZToolPacket
+    public class ZDO_NODE_DESC_REQ_SRSP : ZToolMessage
     {
         /// <summary>
         /// Status is either Success (0) or Failure (1)
@@ -15,7 +15,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         {
             Status = (PacketStatus)framedata[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_NODE_DESC_REQ_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_NODE_DESC_REQ_SRSP), framedata);
         }
     }
 }

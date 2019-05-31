@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet
 {
-    public class ErrorPacket : ZToolPacket
+    public class ErrorPacket : ZToolMessage
     {
         public ErrorPacket()
             :base(new DoubleByte(), new byte[0])

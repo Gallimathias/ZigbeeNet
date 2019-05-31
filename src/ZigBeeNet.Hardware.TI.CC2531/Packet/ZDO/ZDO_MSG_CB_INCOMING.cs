@@ -9,7 +9,7 @@ using ZigBeeNet.ZCL.Protocol;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_MSG_CB_INCOMING : ZToolPacket
+    public class ZDO_MSG_CB_INCOMING : ZToolMessage
     {
         public static Dictionary<ushort, Type> ClusterToRSP { get; private set; }
 
@@ -78,15 +78,15 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 
             Data = framedata.Skip(9).ToArray(); // Arrays.copyOfRange(framedata, 9, framedata.Length);
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MSG_CB_INCOMING), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MSG_CB_INCOMING), framedata);
         }
 
         /// <summary>
         /// Translates the ZigBee ZDO cluster packet into a ZTool RSP packet
         /// </summary>
-        public ZToolPacket Translate()
+        public ZToolMessage Translate()
         {
-            ZToolPacket newPacket = null;
+            ZToolMessage newPacket = null;
             byte[] frame;
 
             Log.Verbose("Translating ZDO cluster callback {ClusterId}", ClusterId);

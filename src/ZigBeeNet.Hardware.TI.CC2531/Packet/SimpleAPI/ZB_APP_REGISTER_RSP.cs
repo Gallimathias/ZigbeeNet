@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
 {
-    public class ZB_APP_REGISTER_RSP : ZToolPacket
+    public class ZB_APP_REGISTER_RSP : ZToolMessage
     {
         /// <name>TI.ZPI2.ZB_APP_REGISTER_RSP.Status</name>
         /// <summary>Status</summary>
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
         public ZB_APP_REGISTER_RSP(byte[] framedata)
         {
             this.Status = framedata[0];
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_APP_REGISTER_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_APP_REGISTER_RSP), framedata);
         }
 
         public override string ToString()

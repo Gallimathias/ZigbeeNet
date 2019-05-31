@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This command is generated to inquire about the Node Descriptor information of the destination device
     /// </summary>
-    public class ZDO_NODE_DESC_REQ : ZToolPacket
+    public class ZDO_NODE_DESC_REQ : ZToolMessage
     {
         /// <summary>
         /// Specifies NWK address of the device generating the inquiry
@@ -31,7 +31,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             framedata[2] = NwkAddrOfInterest.Lsb;
             framedata[3] = NwkAddrOfInterest.Msb;
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_NODE_DESC_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_NODE_DESC_REQ), framedata);
         }
     }
 }

@@ -72,37 +72,34 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Test
             }
 
             XBeeFrameHandler frameHandler = new XBeeFrameHandler();
-            using (MemoryStream memoryStream = new MemoryStream(response))
+            IZigBeePort port = new TestPort(response);
+
+            try
             {
-                IZigBeePort port = new TestPort(memoryStream);
+                Type type = frameHandler.GetType();
+                FieldInfo field = type.GetField("_serialPort", BindingFlags.NonPublic | BindingFlags.Instance);
+                field.SetValue(frameHandler, port);
 
-                try
-                {
-                    Type type = frameHandler.GetType();
-                    FieldInfo field = type.GetField("_serialPort", BindingFlags.NonPublic | BindingFlags.Instance);
-                    field.SetValue(frameHandler, port);
+                MethodInfo privateMethod = type.GetMethod("GetPacket", BindingFlags.NonPublic | BindingFlags.Instance);
 
-                    MethodInfo privateMethod = type.GetMethod("GetPacket", BindingFlags.NonPublic | BindingFlags.Instance);
-
-                    return (int[])privateMethod.Invoke(frameHandler, null);
-                }
-                catch (Exception ex)
-                {
-                    _output.WriteLine(ex.StackTrace);
-                }
-
-                return null;
+                return (int[])privateMethod.Invoke(frameHandler, null);
             }
+            catch (Exception ex)
+            {
+                _output.WriteLine(ex.StackTrace);
+            }
+
+            return null;
         }
     }
 
     class TestPort : IZigBeePort
     {
-        readonly MemoryStream _memoryStream;
+        readonly byte[] _input;
 
-        public TestPort(MemoryStream memoryStream)
+        public TestPort(byte[] input)
         {
-            _memoryStream = memoryStream;
+            _input = input;
         }
 
         public void Close()
@@ -123,28 +120,15 @@ namespace ZigBeeNet.Hardware.Digi.XBee.Test
         {
         }
 
-        public byte? Read()
-        {
-            try
-            {
-                return Convert.ToByte(_memoryStream.ReadByte());
-            }
-            catch (IOException ex)
-            {
-                return null;
-            }
-        }
 
-        public byte? Read(int timeout)
-        {
-            return Read();
-        }
 
         public void Write(byte[] value)
         {
         }
 
-        byte[] IZigBeePort.Read() => throw new NotImplementedException();
-        byte[] IZigBeePort.Read(int timeout) => throw new NotImplementedException();
+        public byte[] Read()
+            => _input;
+        public byte[] Read(int timeout)
+            => Read();
     }
 }

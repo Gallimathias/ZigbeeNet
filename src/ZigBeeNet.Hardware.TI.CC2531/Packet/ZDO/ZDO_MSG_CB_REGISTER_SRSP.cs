@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_MSG_CB_REGISTER_SRSP : ZToolPacket
+    public class ZDO_MSG_CB_REGISTER_SRSP : ZToolMessage
     {
         /// <name>TI.ZPI2.ZDO_MSG_CB_REGISTER_SRSP.Status</name>
         /// <summary>this field indicates either SUCCESS or FAILURE.</summary>
@@ -20,7 +20,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
         {
             Status = (PacketStatus)framedata[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MSG_CB_REGISTER_SRSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MSG_CB_REGISTER_SRSP), framedata);
         }
 
         public override string ToString()

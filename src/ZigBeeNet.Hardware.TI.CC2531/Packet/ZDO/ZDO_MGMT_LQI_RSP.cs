@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// management command is not supported, a status of NOT_SUPPORTED will be
     /// returned and all parameter fields after the Status field will be omitted.
     /// </summary>
-    public class ZDO_MGMT_LQI_RSP : ZToolPacket
+    public class ZDO_MGMT_LQI_RSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_MGMT_LQI_RSP.NeighborLQICount</name>
         /// <summary>Number of entries in this response.</summary>
@@ -78,7 +78,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                     k += 22;
                 }
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MGMT_LQI_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MGMT_LQI_RSP), framedata);
         }
 
         /// <name>TI.ZPI1.ZDO_MGMT_LQI_RSP.NeighborLqiListItemClass</name>

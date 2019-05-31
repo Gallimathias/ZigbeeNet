@@ -13,7 +13,91 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
     {
         public const int PAYLOAD_START_INDEX = 4;
 
-        public const int START_BYTE = 0xFE;
+        public const byte START_BYTE = 0xFE;
+
+        public ushort CommandId => CMD.Value;
+
+        public byte[] Payload { get; set; }
+
+        public byte LEN { get; set; }
+
+        public DoubleByte CMD { get; set; }
+
+        public bool Error { get; set; } = false;
+
+        public byte FCS { get; set; }
+
+        public string ErrorMsg { get; set; }
+
+        public CommandType Type { get; private set; }
+
+        public CommandSubsystem Subsystem { get; private set; }
+                
+
+        /// <summary>
+        /// I started off using bytes but quickly realized that java bytes are signed, so effectively only 7 bits.
+        /// We should be able to use int instead.
+        ///
+        /// </summary> // PROTECTED?        
+        public ZToolPacket()
+        {
+        }
+
+        public byte[] GetBytes()
+        {
+            // packet size is start byte + len byte + 2 cmd bytes + data + checksum byte
+            var packet = new byte[LEN + 5];
+            packet[0] = START_BYTE;
+
+            // note: if checksum is not correct, XBee won't send out packet or return error. ask me how I know.
+            // checksum is always computed on pre-escaped packet
+            Checksum checksum = new Checksum();
+            // Packet length does not include escape bytes
+            //LEN = length - 5;
+            packet[1] = (byte)LEN;
+            checksum.AddByte(packet[1]);
+            // msb Cmd0 -> Type & Subsystem
+            packet[2] = CMD.Msb;
+            checksum.AddByte(packet[2]);
+            // lsb Cmd1 -> PROFILE_ID_HOME_AUTOMATION
+            packet[3] = CMD.Lsb;
+            checksum.AddByte(packet[3]);
+
+            Buffer.BlockCopy(Payload, 0, packet, PAYLOAD_START_INDEX, LEN);
+            checksum.AddBytes(Payload, 0, Payload.Length);
+            // set last byte as checksum
+            FCS = checksum.Value;
+            packet[packet.Length - 1] = FCS;
+
+            return packet;
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append("Packet: subsystem=")
+               .Append(Subsystem)
+               .Append(", length=")
+               .Append(LEN)
+               .Append(", apiId=")
+               .Append(ByteUtils.ToBase16(CMD.Msb))
+               .Append(" ")
+               .Append(ByteUtils.ToBase16(CMD.Lsb))
+               .Append(", data=")
+               .Append(ByteUtils.ToBase16(Packet))
+               .Append(", checksum=")
+               .Append(ByteUtils.ToBase16(FCS))
+               .Append(", error=")
+               .Append(Error);
+            if (Error)
+            {
+                builder.Append(", errorMessage=");
+                builder.Append(ErrorMsg);
+            }
+
+            return builder.ToString();
+        }
 
         public enum CommandType : byte
         {
@@ -76,146 +160,27 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             SRV_CTR = 0x1f
         }
 
-        public byte[] Packet { get; set; }
-
-        public int LEN { get; set; }
-
-        public DoubleByte CMD { get; set; }
-
-        public bool Error { get; set; } = false;
-
-        public byte FCS { get; set; }
-
-        public string ErrorMsg { get; set; }
-
-        public CommandType Type
+        public static ZToolPacket Parse(byte[] frameData, int offset, int length)
         {
-            get
+            if (frameData[offset] != START_BYTE)
+                throw new ArgumentException("The given data does not match a ZToolPacket", nameof(frameData));
+
+            var len = frameData[offset + 1];
+            var idMsb = frameData[offset + 2];
+
+            var packet = new ZToolPacket()
             {
-                return (CommandType)((Packet[2] & 0x60) >> 5);
-            }
-        }
+                LEN = len,
+                CMD = new DoubleByte(idMsb, frameData[offset + 3]),
+                FCS = frameData[offset + len + 4],
+                Subsystem = (CommandSubsystem)(idMsb & 0x1F),
+                Type = (CommandType)((idMsb & 0x60) >> 5)
+            };
 
-        public CommandSubsystem Subsystem
-        {
-            get
-            {
-                return (CommandSubsystem)(Packet[2] & 0x1F);
-            }
-        }
-
-        /// <summary>
-        /// I started off using bytes but quickly realized that java bytes are signed, so effectively only 7 bits.
-        /// We should be able to use int instead.
-        ///
-        /// </summary> // PROTECTED?
-        public ZToolPacket()
-        {
-        }
-
-        // PROTECTED?
-        public ZToolPacket(DoubleByte ApiId, byte[] frameData)
-        {
-            BuildPacket(ApiId, frameData);
-        }
-
-        public void BuildPacket(DoubleByte ApiId, byte[] frameData, int offset = 0, int length = -1)
-        {
-            // packet size is start byte + len byte + 2 cmd bytes + data + checksum byte
-            length = length < 0 ? frameData.Length : length;
-            Packet = new byte[length + 5];
-            Packet[0] = START_BYTE;
-
-            // note: if checksum is not correct, XBee won't send out packet or return error. ask me how I know.
-            // checksum is always computed on pre-escaped packet
-            Checksum checksum = new Checksum();
-            // Packet length does not include escape bytes
-            LEN = length;
-            Packet[1] = (byte)LEN;
-            checksum.AddByte(Packet[1]);
-            // msb Cmd0 -> Type & Subsystem
-            Packet[2] = ApiId.Msb;
-            checksum.AddByte(Packet[2]);
-            // lsb Cmd1 -> PROFILE_ID_HOME_AUTOMATION
-            Packet[3] = ApiId.Lsb;
-            checksum.AddByte(Packet[3]);
-            CMD = ApiId;
-
-            Buffer.BlockCopy(frameData, offset, Packet, PAYLOAD_START_INDEX, length);
-            // data
-            //for (int i = 0; i < frameData.Length; i++)
-            //{
-            //    if (!ByteUtils.IsByteValue(frameData[i]))
-            //    {
-            //        throw new Exception("Value is greater than one byte: " + frameData[i] + " (" + string.Format("{0:X}", frameData[i]) + ")");
-            //    }
-            //    Packet[PAYLOAD_START_INDEX + i] = frameData[i];
-            //    checksum.AddByte(Packet[PAYLOAD_START_INDEX + i]);
-            //}
-            checksum.AddBytes(frameData, offset, length);
-            // set last byte as checksum
-            FCS = checksum.Value;
-            Packet[Packet.Length - 1] = FCS;
-        }
-
-        /// <summary>
-        /// Gets a hex dump of the packet data
-        ///
-        /// <returns><see cref="String"> containing the packet data</returns>
-        /// </summary>
-        public string PacketString
-        {
-            get
-            {
-                StringBuilder builder = new StringBuilder();
-
-                bool first = true;
-                foreach (byte value in Packet)
-                {
-                    if (!first)
-                    {
-                        builder.Append(' ');
-                    }
-                    first = false;
-                    builder.Append(value.ToString("X2"));
-                }
-                return builder.ToString();
-            }
-        }
-
-        public ushort CommandId
-        {
-            get
-            {
-                return ByteHelper.ShortFromBytes(Packet, 2, 3);
-            }
-        }
-
-        public override string ToString()
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.Append("Packet: subsystem=")
-               .Append(Subsystem)
-               .Append(", length=")
-               .Append(LEN)
-               .Append(", apiId=")
-               .Append(ByteUtils.ToBase16(CMD.Msb))
-               .Append(" ")
-               .Append(ByteUtils.ToBase16(CMD.Lsb))
-               .Append(", data=")
-               .Append(ByteUtils.ToBase16(Packet))
-               .Append(", checksum=")
-               .Append(ByteUtils.ToBase16(FCS))
-               .Append(", error=")
-               .Append(Error);
-            if (Error)
-            {
-                builder.Append(", errorMessage=");
-                builder.Append(ErrorMsg);
-            }
-
-            return builder.ToString();
+            Buffer.BlockCopy(frameData, offset + 4, packet.Payload, 0, len);
+            //TODO Checksum check
+            //throw new ZToolParseException("Packet checksum failed");
+            return packet;
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
 {
-    public class SYS_TEST_LOOPBACK : ZToolPacket
+    public class SYS_TEST_LOOPBACK : ZToolMessage
     {
         public byte[] TestData;
 
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SYS
             this.TestData = buffer1;
             byte[] framedata = new byte[buffer1.Length];
             framedata = this.TestData;
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.SYS_TEST_LOOPBACK), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.SYS_TEST_LOOPBACK), framedata);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
                              .ToArray();
         }
 
-        protected ZToolPacket GetPacket(string stringData)
+        protected ZToolMessage GetPacket(string stringData)
         {
             byte[] packet = GetPacketData(stringData);
 
@@ -30,12 +30,18 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
                 byteArray[c - 1] = (byte)packet[c];
             }
 
-            MemoryStream stream = new MemoryStream(byteArray);
-            IZigBeePort port = new TestPort(stream, null);
+            return GetPacket(byteArray);
+        }
+        protected ZToolMessage GetPacket(byte[] byteArray)
+        {           
+
+            IZigBeePort port = new TestPort(byteArray, null);
 
             try
             {
-                ZToolPacket ztoolPacket = new ZToolPacketStream(port).ParsePacket();
+                //ZToolPacket ztoolPacket = new ZToolPacketStream(port).ParsePacket();
+                var array = port.Read();
+                ZToolMessage ztoolPacket = ZToolPacketStream.ParsePacket(array, 0, array.Length);
 
                 Assert.False(ztoolPacket.Error);
 

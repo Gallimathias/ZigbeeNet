@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This command is used to get a configuration property from non-volatile memory
     /// </summary>
-    public class ZB_READ_CONFIGURATION_RSP : ZToolPacket
+    public class ZB_READ_CONFIGURATION_RSP : ZToolMessage
     {
         /// <summary>
         /// This field indicates either SUCCESS (0) or FAILURE (1)
@@ -42,7 +42,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 this.Value[i] = framedata[i + 3];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_READ_CONFIGURATION_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_READ_CONFIGURATION_RSP), framedata);
         }
     }
 }

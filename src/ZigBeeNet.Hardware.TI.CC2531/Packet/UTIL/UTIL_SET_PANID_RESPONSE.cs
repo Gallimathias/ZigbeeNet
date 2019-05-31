@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
 {
-    public class UTIL_SET_PANID_RESPONSE : ZToolPacket
+    public class UTIL_SET_PANID_RESPONSE : ZToolMessage
     {
     /// <name>TI.ZPI1.SYS_SET_PANID_RESPONSE.Status</name>
     /// <summary>Status</summary>
@@ -20,7 +20,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.UTIL
     {
         this.Status = framedata[0];
 
-        BuildPacket(new DoubleByte((ushort)ZToolCMD.UTIL_SET_PANID_RESPONSE), framedata);
+        BuildPacket(new DoubleByte((ushort)MessageId.UTIL_SET_PANID_RESPONSE), framedata);
     }
 
     public override string ToString()

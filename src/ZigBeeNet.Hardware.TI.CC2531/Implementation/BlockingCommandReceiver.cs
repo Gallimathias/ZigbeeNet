@@ -25,11 +25,11 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <summary>
         /// The command ID to wait for.
         /// </summary>
-        private ZToolCMD _commandId;
+        private MessageId _commandId;
         /// <summary>
         /// The command packet.
         /// </summary>
-        private ZToolPacket _commandPacket = null;
+        private ZToolMessage _commandPacket = null;
 
         /// <summary>
         /// The constructor for setting expected command ID and command interface.
@@ -38,7 +38,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <param name="commandId">the command ID</param>  
         /// <param name="commandInterface">the command interface</param>  
         /// </summary>
-        public BlockingCommandReceiver(ZToolCMD commandId, ICommandInterface commandInterface)
+        public BlockingCommandReceiver(MessageId commandId, ICommandInterface commandInterface)
         {
             _getCommandLockObject = new object();
 
@@ -54,7 +54,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// <param name="timeoutMillis">the timeout in milliseconds</param>
         /// <returns>the command packet or null if time out occurs.</returns>
         /// </summary>
-        public ZToolPacket GetCommand(long timeoutMillis)
+        public ZToolMessage GetCommand(long timeoutMillis)
         {
             lock (_getCommandLockObject)
             {
@@ -91,7 +91,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
             }
         }
 
-        public void ReceivedAsynchronousCommand(ZToolPacket packet)
+        public void ReceivedAsynchronousCommand(ZToolMessage packet)
         {
             Log.Verbose("Received a packet {} and waiting for {}", packet.CMD, _commandId);
             Log.Verbose("received {} {}", packet.GetType(), packet.ToString());
@@ -99,7 +99,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
             //{
             //    return;
             //}
-            if ((ZToolCMD)packet.CMD.Value != _commandId)
+            if ((MessageId)packet.CMD.Value != _commandId)
             {
                 Log.Verbose("Received unexpected packet: " + packet.GetType().Name);
                 return;
@@ -112,7 +112,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
             }
         }
 
-        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolPacket packet)
+        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolMessage packet)
         {
             // Response handler not required
         }

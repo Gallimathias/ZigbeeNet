@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This command retrieves a Device Information Property
     /// </summary>
-    public class ZB_GET_DEVICE_INFO : ZToolPacket
+    public class ZB_GET_DEVICE_INFO : ZToolMessage
     {
         /// <summary>
         /// The Identifier for the device information
@@ -19,7 +19,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
             Param = param;
             byte[] framedata = new byte[] { (byte)param };
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_GET_DEVICE_INFO), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_GET_DEVICE_INFO), framedata);
         }    
         
         public enum DEV_INFO_TYPE : byte

@@ -8,10 +8,10 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
 {
     public class TestPort : IZigBeePort
     {
-        Stream input;
-        Stream output;
+        byte[] input;
+        byte[] output;
 
-        public TestPort(Stream input, Stream output)
+        public TestPort(byte[] input, byte[] output)
         {
             this.input = input;
             this.output = output;
@@ -30,22 +30,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
         {
         }
 
-        public byte? Read(int timeout)
-        {
-            return Read();
-        }
 
-        public byte? Read()
-        {
-            try
-            {
-                return (byte)input.ReadByte();
-            }
-            catch (IOException e)
-            {
-                return null;
-            }
-        }
 
         public bool Open(int baudRate)
         {
@@ -60,5 +45,11 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Test
         public void PurgeRxBuffer()
         {
         }
+
+        public byte[] Read()
+                => input;
+
+        public byte[] Read(int timeout)
+            => Read();
     }
 }

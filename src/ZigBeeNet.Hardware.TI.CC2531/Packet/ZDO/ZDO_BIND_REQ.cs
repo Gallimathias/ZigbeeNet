@@ -9,7 +9,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This command is generated to request a Bind
     /// </summary>
-    public class ZDO_BIND_REQ : ZToolPacket
+    public class ZDO_BIND_REQ : ZToolMessage
     {
         /// <summary>
         /// Specifies the destination address of the device generating the bind request
@@ -95,7 +95,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                 framedata[15] = bytes[6];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_BIND_REQ), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_BIND_REQ), framedata);
         }        
     }
 }

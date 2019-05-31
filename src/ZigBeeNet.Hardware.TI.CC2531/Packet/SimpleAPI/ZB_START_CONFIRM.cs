@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This callback is called by the ZigBee stack after a start request operation completes
     /// </summary>
-    public class ZB_START_CONFIRM : ZToolPacket
+    public class ZB_START_CONFIRM : ZToolMessage
     {
         /// <summary>
         /// This field indicates either SUCCESS (0) or FAILURE (1)
@@ -18,7 +18,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
         {
             Status = (PacketStatus)framedata[0];
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_START_CONFIRM), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_START_CONFIRM), framedata);
         }
     }
 }

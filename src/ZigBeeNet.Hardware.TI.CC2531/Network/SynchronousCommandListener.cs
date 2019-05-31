@@ -8,9 +8,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
 {
     public class SynchronousCommandListener : ISynchronousCommandListener
     {
-        public event EventHandler<ZToolPacket> OnResponseReceived;
+        public event EventHandler<ZToolMessage> OnResponseReceived;
 
-        public void ReceivedCommandResponse(ZToolPacket packet)
+        public void ReceivedCommandResponse(ZToolMessage packet)
         {
             Log.Verbose(" {Packet} received as synchronous command.", packet.GetType().Name);
             OnResponseReceived?.Invoke(this, packet);

@@ -5,7 +5,7 @@ using ZigBeeNet.Hardware.TI.CC2531.Util;
 
 namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
 {
-    public class ZDO_MATCH_DESC_RSP : ZToolPacket
+    public class ZDO_MATCH_DESC_RSP : ZToolMessage
     {
         /// <name>TI.ZPI1.ZDO_MATCH_DESC_RSP.MatchCount</name>
         /// <summary>Number of active endpoints in the list</summary>
@@ -41,7 +41,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
             {
                 this.MatchEndpointList[i] = framedata[i + 6];
             }
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_MATCH_DESC_RSP), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_MATCH_DESC_RSP), framedata);
         }
 
         public override string ToString()

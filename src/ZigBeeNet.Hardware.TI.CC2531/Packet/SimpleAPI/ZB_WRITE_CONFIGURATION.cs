@@ -7,7 +7,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
     /// <summary>
     /// This command is used to write a Configuration Property to non-volatile memory
     /// </summary>
-    public class ZB_WRITE_CONFIGURATION : ZToolPacket
+    public class ZB_WRITE_CONFIGURATION : ZToolMessage
     {
         public ZB_WRITE_CONFIGURATION(CONFIG_ID configId, byte[] nvItemValue)
         {
@@ -20,7 +20,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.SimpleAPI
                 framedata[i + 2] = nvItemValue[i];
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZB_WRITE_CONFIGURATION), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZB_WRITE_CONFIGURATION), framedata);
         }
 
         public enum CONFIG_ID : byte

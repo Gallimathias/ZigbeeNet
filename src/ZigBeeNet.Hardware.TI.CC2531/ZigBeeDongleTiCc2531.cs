@@ -116,49 +116,49 @@ namespace ZigBeeNet.Hardware.TI.CC2531
             return true;
         }
 
-        public void ReceivedAsynchronousCommand(ZToolPacket packet)
+        public void ReceivedAsynchronousCommand(ZToolMessage packet)
         {
             switch (packet.Subsystem)
             {
-                case ZToolPacket.CommandSubsystem.AF:
+                case ZToolMessage.CommandSubsystem.AF:
                     return;
-                case ZToolPacket.CommandSubsystem.ZDO:
+                case ZToolMessage.CommandSubsystem.ZDO:
                     break;
                 default:
                     break;
             }
 
             ZigBeeApsFrame apsFrame = null;
-            switch ((ZToolCMD)packet.CMD.Value)
+            switch ((MessageId)packet.CMD.Value)
             {
-                case ZToolCMD.ZDO_MSG_CB_INCOMING:
+                case MessageId.ZDO_MSG_CB_INCOMING:
                     apsFrame = ZdoCallbackIncoming.Create(packet);
                     break;
-                case ZToolCMD.ZDO_IEEE_ADDR_RSP:
+                case MessageId.ZDO_IEEE_ADDR_RSP:
                     apsFrame = ZdoIeeeAddress.Create(packet);
                     break;
-                case ZToolCMD.ZDO_END_DEVICE_ANNCE_IND:
+                case MessageId.ZDO_END_DEVICE_ANNCE_IND:
                     apsFrame = ZdoEndDeviceAnnounce.Create(packet);
                     break;
-                case ZToolCMD.ZDO_NODE_DESC_RSP:
+                case MessageId.ZDO_NODE_DESC_RSP:
                     apsFrame = ZdoNodeDescriptor.Create(packet);
                     break;
-                case ZToolCMD.ZDO_POWER_DESC_RSP:
+                case MessageId.ZDO_POWER_DESC_RSP:
                     apsFrame = ZdoPowerDescriptor.Create(packet);
                     break;
-                case ZToolCMD.ZDO_ACTIVE_EP_RSP:
+                case MessageId.ZDO_ACTIVE_EP_RSP:
                     apsFrame = ZdoActiveEndpoint.Create(packet);
                     break;
-                case ZToolCMD.ZDO_SIMPLE_DESC_RSP:
+                case MessageId.ZDO_SIMPLE_DESC_RSP:
                     apsFrame = ZdoSimpleDescriptor.Create(packet);
                     break;
-                case ZToolCMD.ZDO_MGMT_LQI_RSP:
+                case MessageId.ZDO_MGMT_LQI_RSP:
                     apsFrame = ZdoManagementLqi.Create(packet);
                     break;
-                case ZToolCMD.ZDO_MGMT_RTG_RSP:
+                case MessageId.ZDO_MGMT_RTG_RSP:
                     apsFrame = ZdoManagementRouting.Create(packet);
                     break;
-                case ZToolCMD.ZDO_MGMT_LEAVE_RSP:
+                case MessageId.ZDO_MGMT_LEAVE_RSP:
                     apsFrame = ZdoManagementLeave.Create(packet);
                     break;
                 default:
@@ -173,9 +173,9 @@ namespace ZigBeeNet.Hardware.TI.CC2531
             }
         }
 
-        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolPacket packet)
+        public void ReceivedUnclaimedSynchronousCommandResponse(ZToolMessage packet)
         {
-            if (packet is ZToolPacket srsp)
+            if (packet is ZToolMessage srsp)
             {
                 throw new NotImplementedException();
             }

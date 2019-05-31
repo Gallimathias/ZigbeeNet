@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
     /// <summary>
     /// This callback message is in response to the ZDO IEEE Address Request
     /// </summary>
-    public class ZDO_IEEE_ADDR_RSP : ZToolPacket
+    public class ZDO_IEEE_ADDR_RSP : ZToolMessage
     {
         /// <summary>
         /// This field indicates either SUCCESS or FAILURE
@@ -61,7 +61,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.ZDO
                 this.AssocDevList[i] = new ZToolAddress16(data[14 + (i * 2)], data[13 + (i * 2)]);
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.ZDO_IEEE_ADDR_RSP), data);
+            BuildPacket(new DoubleByte((ushort)MessageId.ZDO_IEEE_ADDR_RSP), data);
         }
     }
 }

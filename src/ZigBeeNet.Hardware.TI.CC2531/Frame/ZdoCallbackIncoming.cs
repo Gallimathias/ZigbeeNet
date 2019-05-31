@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Frame
 {
     public class ZdoCallbackIncoming : TiDongleReceivePacket
     {
-        public static ZigBeeApsFrame Create(ZToolPacket packet)
+        public static ZigBeeApsFrame Create(ZToolMessage packet)
         {
             ZigBeeApsFrame apsFrame = new ZigBeeApsFrame();
             apsFrame.Cluster = (ushort)(packet.Packet[7] | (packet.Packet[8] << 8));

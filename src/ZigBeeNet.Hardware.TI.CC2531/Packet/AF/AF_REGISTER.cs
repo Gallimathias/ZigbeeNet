@@ -8,7 +8,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
     /// <summary>
     /// This command enables the tester to register an application’s endpoint description
     /// </summary>
-    public class AF_REGISTER : ZToolPacket
+    public class AF_REGISTER : ZToolMessage
     {
         /// <summary>
         /// Specifies the endpoint of the device 
@@ -91,7 +91,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet.AF
                 framedata[(i * 2) + ((AppInClusterList.Length) * 2) + 10] = AppOutClusterList[i].GetByte(1);
             }
 
-            BuildPacket(new DoubleByte((ushort)ZToolCMD.AF_REGISTER), framedata);
+            BuildPacket(new DoubleByte((ushort)MessageId.AF_REGISTER), framedata);
         }
     }
 }

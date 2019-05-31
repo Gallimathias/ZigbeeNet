@@ -588,7 +588,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// <summary>
         /// <paramref name="request"/>
         /// </summary>
-        private void WaitAndLock3WayConversation(ZToolPacket request)
+        private void WaitAndLock3WayConversation(ZToolMessage request)
         {
             lock (_conversation3Way)
             {
@@ -622,7 +622,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         ///
         /// <paramref name="request"/>
         /// </summary>
-        private void UnLock3WayConversation(ZToolPacket request)
+        private void UnLock3WayConversation(ZToolMessage request)
         {
             Type clz = request.GetType();
             Thread requestor;
@@ -647,7 +647,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
 
         private bool BootloaderGetOut(byte magicByte)
         {
-            BlockingCommandReceiver waiter = new BlockingCommandReceiver(ZToolCMD.SYS_RESET_RESPONSE, _commandInterface);
+            BlockingCommandReceiver waiter = new BlockingCommandReceiver(MessageId.SYS_RESET_RESPONSE, _commandInterface);
 
             try
             {
@@ -695,7 +695,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
 
         private bool DongleReset()
         {
-            BlockingCommandReceiver waiter = new BlockingCommandReceiver(ZToolCMD.SYS_RESET_RESPONSE, _commandInterface);
+            BlockingCommandReceiver waiter = new BlockingCommandReceiver(MessageId.SYS_RESET_RESPONSE, _commandInterface);
 
             try
             {
@@ -865,28 +865,28 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
         /// <summary>
         /// Sends a command without waiting for the response
         ///
-        /// <param name="request"><see cref="ZToolPacket"></param>
+        /// <param name="request"><see cref="ZToolMessage"></param>
         /// </summary>
-        public void SendCommand(ZToolPacket request)
+        public void SendCommand(ZToolMessage request)
         {
             SendSynchronous(request);
         }
 
-        private ZToolPacket SendSynchronous(ZToolPacket request)
+        private ZToolMessage SendSynchronous(ZToolMessage request)
         {
             return SendSynchronous(request, RESEND_TIMEOUT);
         }
 
-        private ZToolPacket SendSynchronous(ZToolPacket request, int timeout)
+        private ZToolMessage SendSynchronous(ZToolMessage request, int timeout)
         {
-            ZToolPacket[] response = new ZToolPacket[] { null };
+            ZToolMessage[] response = new ZToolMessage[] { null };
             int sending = 1;
 
             Log.Verbose("{Request} sending as synchronous command.", request.GetType().Name);
 
             SynchronousCommandListener listener = new SynchronousCommandListener();
 
-            listener.OnResponseReceived += (object sender, ZToolPacket packet) =>
+            listener.OnResponseReceived += (object sender, ZToolMessage packet) =>
             {
                 response[0] = packet;
                 _hardwareSync.Set();
@@ -995,7 +995,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Network
             AF_DATA_CONFIRM result = null;
 
             WaitAndLock3WayConversation(request);
-            BlockingCommandReceiver waiter = new BlockingCommandReceiver(ZToolCMD.AF_DATA_CONFIRM, _commandInterface);
+            BlockingCommandReceiver waiter = new BlockingCommandReceiver(MessageId.AF_DATA_CONFIRM, _commandInterface);
 
             AF_DATA_SRSP response = (AF_DATA_SRSP)SendSynchronous(request);
             if (response == null || response.Status != 0)
