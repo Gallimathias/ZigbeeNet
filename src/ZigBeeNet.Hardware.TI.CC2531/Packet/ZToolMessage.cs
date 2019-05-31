@@ -12,7 +12,7 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
     public abstract class ZToolMessage : ISerializeable
     {
         public MessageId Id { get; }
-        public abstract int Size { get; }
+        public abstract byte Size { get; }
 
         public ZToolMessage(MessageId id)
         {

@@ -182,5 +182,22 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Packet
             //throw new ZToolParseException("Packet checksum failed");
             return packet;
         }
+        public static ZToolPacket Parse(ZToolMessage message)
+        {
+            var len = message.Size;
+            var cmd = new DoubleByte((ushort)message.Id);
+
+            var packet = new ZToolPacket()
+            {
+                LEN = len,
+                CMD = cmd,
+                Subsystem = (CommandSubsystem)(cmd.Msb & 0x1F),
+                Type = (CommandType)((cmd.Msb & 0x60) >> 5),
+                Payload = new byte [len]
+            };
+
+            message.Serialize(packet.Payload, 0);
+            return packet;
+        }
     }
 }

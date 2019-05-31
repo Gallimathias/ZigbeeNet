@@ -143,10 +143,8 @@ namespace ZigBeeNet.Hardware.TI.CC2531.Implementation
         /// </summary>
         public void SendPacket(ZToolMessage packet)
         {
-            //TODO: Message to packet
             Log.Debug("-->  {Type} ({Packet}) ", packet.GetType().Name, packet);
-            byte[] pck = packet.Packet;
-            SendRaw(pck);
+            SendRaw(ZToolPacket.Parse(packet).GetBytes());
         }
 
         /// <summary>
